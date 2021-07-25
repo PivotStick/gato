@@ -1,0 +1,29 @@
+{
+    "license": "ISC",
+    "version": "0.0.1",
+    "main": "index.js",
+    "name": "simplified",
+    "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
+    "description": "a very easy and fast way to declare a restful api with roles, authentification and mongodb",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongodb": "^4.0.1"
+    },
+    "keywords": [
+        "express",
+        "mongodb",
+        "odm",
+        "rest",
+        "rest-api",
+        "api",
+        "jsonwebtoken",
+        "authentification",
+        "auth",
+        "fun",
+        "easy"
+    ]
+}
