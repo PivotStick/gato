@@ -10,20 +10,19 @@ const { resolveKey } = require("../key/resolveKey")
  *
  * @param {string} prefix
  * @param {{ [key: string]: import("../controller/makeController").RequestHandler }} schema
+ * @param {(controller: import("express").RequestHandler) => void} callback
  *
  * @returns {Schema[]}
  */
-exports.resolveSchema = (prefix, schema) => {
-    const controllers = []
+exports.resolveSchema = function* (prefix, schema) {
     for (const key in schema) {
         const { identifier, ...meta } = resolveKey(key)
         const controller = makeController(schema[key])
 
-        meta.middlewares = controllers.push({
+        yield {
             ...meta,
             checkRights: checkRights(prefix, identifier.slice(1)),
             controller,
-        })
+        }
     }
-    return controllers
 }

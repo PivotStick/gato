@@ -4,14 +4,10 @@ const { resolveSchema } = require("./resolveSchema")
 
 /**
  * @typedef {"get" | "put" | "patch" | "delete" | "post"} Method
- * @param {{
- *  [K in Method]: {
- *      [key: string]: import("../controller/makeController").RequestHandler
- *  }
- * }} methods
+ * @param {import("../../@types").Method} method
  * @param {string} prefix
  */
-exports.createRouter = (methods, prefix) => {
+exports.createRouter = (method, prefix) => {
     const router = Router()
     const { _middlewares } = global.paths
 

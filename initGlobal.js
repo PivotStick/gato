@@ -4,13 +4,12 @@ const { Model } = require("./model/Model")
 /**
  * @type {import("./types").Paths}
  */
-globalThis.paths = {
-    _security: null,
+global.paths = {
     _middlewares: null,
     _routes: null,
 }
 
-globalThis.mongo = {
+global.mongo = {
     /** @type {import("mongodb").Db} */
     db: null,
 }
@@ -18,7 +17,7 @@ globalThis.mongo = {
 /**
  * @type {Map<*, import("./types").TypeDef<*>>}
  */
-globalThis.types = new Map()
+global.types = new Map()
 
 global.types.set(Date, {
     validator: (_, after) => !isNaN(after.valueOf()),
@@ -37,7 +36,15 @@ global.types.set(String, {
 /**
  * @type {{ User: typeof Auth, Auth: typeof Auth, [key: string]: typeof Model }}
  */
-globalThis.models = {
+global.models = {
     Auth,
     User: null,
+}
+
+globalThis.profiles = {
+    anonymous: ["anonymous"],
+}
+
+globalThis.rights = {
+    anonymous: {},
 }

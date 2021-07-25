@@ -4,7 +4,7 @@ const { Crypto } = require("./Crypto")
 
 let identifier = "username"
 
-exports.Auth = class extends Model {
+class Auth extends Model {
     profiles = [String.prototype]
 
     password = String.prototype
@@ -24,7 +24,7 @@ exports.Auth = class extends Model {
 
     static async login({ id, password }) {
         /**
-         * @type {exports.Auth}
+         * @type {Auth}
          */
         const user = await this.collection.findOne({ [this.identifer]: id })
 
@@ -49,3 +49,5 @@ exports.Auth = class extends Model {
         })
     }
 }
+
+exports.Auth = Auth

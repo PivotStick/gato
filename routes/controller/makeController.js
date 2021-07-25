@@ -1,10 +1,7 @@
 const { makeArg } = require("./makeArg")
 
 /**
- * @typedef {{ $$status: number, [key: string]: any }} Response
- * @typedef {() => Promise<Response>} RequestHandler
- *
- * @param {RequestHandler} controller
+ * @param {() => Promise<any>} controller
  */
 exports.makeController = (controller) => async (req, res, next) => {
     try {

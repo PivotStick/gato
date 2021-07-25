@@ -5,7 +5,7 @@
 exports.makeArg = (req, res) => ({
     body: {
         ...req.body,
-        get(key) {
+        require(key) {
             if (!(key in req.body))
                 throw Error(`${key} is required in the body`)
             return req.body[key]
@@ -16,7 +16,7 @@ exports.makeArg = (req, res) => ({
 
     user: req.user,
 
-    $$: {
+    $: {
         //#region status
         get status() {
             return res.statusCode

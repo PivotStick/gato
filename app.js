@@ -7,8 +7,6 @@ const { errorHandler } = require("./middlewares/errorHandler")
 const { connect } = require("./database/connect")
 const { routeNotFound } = require("./middlewares/routeNotFound")
 
-require("./initGlobal")
-
 class App {
     /** @type {import("express").Express} */
     #app
@@ -25,12 +23,11 @@ class App {
      */
     constructor(architecture, options = {}) {
         this.#app = express()
-        this.#architecture = architecture
+        this.#architecture = { [require.main.path]: architecture }
         this.#options = options
 
         global.paths._routes = this.#findDir("routes")
         global.paths._middlewares = this.#findDir("middlewares")
-        global.paths._security = this.#findDir("security").path
 
         this.#app.use(express.json())
         this.#app.use(session)
