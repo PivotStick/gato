@@ -2,7 +2,7 @@
     "license": "ISC",
     "version": "0.0.1",
     "main": "index.js",
-    "name": "simplified",
+    "name": "gatos",
     "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
     "description": "a very easy and fast way to declare a restful api with roles, authentification and mongodb",
     "scripts": {
