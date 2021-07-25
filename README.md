@@ -1,10 +1,10 @@
-# SLASH
+# GATOS
 
-`npm install @slash`
+`npm install gatos`
 
 or
 
-`yarn add @slash`
+`yarn add gatos`
 
 ## Overview
 
@@ -55,7 +55,7 @@ this.delete = {
 ## Quick start
 
 ```js
-const { App } = require("@slash")
+const { App } = require("gatos")
 
 new App({
     [__dirname]: {
@@ -72,7 +72,7 @@ You can change the controllers name folder.
 The middlewares folder can also be changed.
 
 ```js
-const App = require("@slash")
+const App = require("gatos")
 
 const options = {
     dirNames: {

@@ -4,7 +4,7 @@
     "main": "index.js",
     "name": "gatos",
     "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
-    "description": "a very easy and fast way to declare a restful api with roles, authentification and mongodb",
+    "description": "a very easy and fast way to declare a restful api with roles, auth and mongodb",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
