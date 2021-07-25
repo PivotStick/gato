@@ -34,6 +34,15 @@ class Auth extends Model {
         return new JWT({ _id: user._id })
     }
 
+    /**
+     *
+     * @param {(keyof typeof profiles)[]} profiles
+     * @param {{
+     *      password: string
+     *      [k: string]: any
+     * }} payload
+     * @returns
+     */
     static async create(profiles, payload) {
         const exists = await this.findOne({
             [this.identifer]: payload[this.identifer],

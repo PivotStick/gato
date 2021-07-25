@@ -197,10 +197,7 @@ class Book extends Model {
     }
 
     static getSpecialBooks() {
-        // default mongodb collection driver for this model
-        // the collection name is automatically generated
-        // using the class name
-        return this.collection.find({
+        return this.find({
             name: { $regex: /special/i },
         })
     }

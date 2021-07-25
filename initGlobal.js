@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb")
 const { Auth } = require("./auth/Auth")
 const { Model } = require("./model/Model")
 
@@ -21,6 +22,10 @@ global.types = new Map()
 
 global.types.set(Date, {
     validator: (_, after) => !isNaN(after.valueOf()),
+})
+
+global.types.set(ObjectId, {
+    validator: ObjectId.isValid,
 })
 
 global.types.set(Number, {
