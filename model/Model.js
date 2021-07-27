@@ -87,9 +87,7 @@ class Model {
     }
 
     /**
-     * @type {{
-     *  collectionName?: string
-     * }}
+     * @type {import("./types").Options}
      */
     static get options() {
         return {}
@@ -107,9 +105,9 @@ class Model {
     }
 
     /**
-     * @template T
+     * @method
      * @param {import("mongodb").Filter<T>} filter
-     * @returns {Promise<Model>}
+     * @returns {Promise<Model<T>>}
      */
     static async findOne(filter) {
         formatFilter(filter)

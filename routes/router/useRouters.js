@@ -8,6 +8,8 @@ let prefix = null
 let router = null
 
 const addMethod = (method, controllers) => {
+    if (prefix === null) return
+
     for (let { controller, middlewares, path, checkRights } of resolveSchema(
         prefix,
         controllers
@@ -52,6 +54,8 @@ exports.useRouters = (app) => {
 
         app.use(prefix, router)
     }
+
+    prefix = null
 }
 
 /**

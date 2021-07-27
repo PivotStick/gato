@@ -28,7 +28,7 @@ class Auth extends Model {
          */
         const user = await this.collection.findOne({ [this.identifer]: id })
 
-        if (!user || !Crypto.compare(password, user.password))
+        if (!user || !(await Crypto.compare(password, user.password)))
             throw new Error("username or password wrong")
 
         return new JWT({ _id: user._id })

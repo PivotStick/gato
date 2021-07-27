@@ -21,7 +21,7 @@ exports.resolveSchema = function* (prefix, schema) {
 
         yield {
             ...meta,
-            checkRights: checkRights(prefix, identifier.slice(1)),
+            checkRights: checkRights(prefix.slice(1), identifier.slice(1)),
             controller,
         }
     }
