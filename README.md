@@ -160,7 +160,7 @@ where we create the **Book** model
 `models/Book.js`
 
 ```js
-const { Model } = require("gatos")
+const { Model } = require("gatos/models")
 
 // This is a normal js class, nothing is transformed
 // So you can make complex inheritance and create your
