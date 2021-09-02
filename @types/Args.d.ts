@@ -1,25 +1,30 @@
-import { Auth } from "../auth/Auth"
-
-type StringPairs = Record<string, string>
+import { Auth, Anonymous } from "../models"
 
 export type Args<
-    Body extends StringPairs = {},
-    Params extends StringPairs = {},
-    Query extends StringPairs = {}
+    Body = {},
+    Params = {},
+    Query = {},
+    User extends Auth = Auth
 > = {
-    body: Body & {
-        require<Property extends keyof Body>(property: Property): Body[Property]
-    }
+    user: User | Anonymous
 
     params: Params
     query: Query
 
-    $: Response
+    body: Partial<Body> & {
+        /**
+         * This will throw an error if this key is not found in the body,
+         * expect if the defaultValue is provided.
+         *
+         * @returns the value of the body's key
+         */
+        require<Key extends keyof Body>(
+            key: Key,
+            defaultValue?: Body[Key]
+        ): Body[Key]
+    }
 
-    user: Auth
-}
-
-type Response = {
-    status: number
-    headers: { [k: string]: string }
+    $: {
+        status: number
+    }
 }

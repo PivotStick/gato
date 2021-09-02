@@ -1,7 +1,5 @@
-require("./initGlobal")
+require("./global")
 
 module.exports = {
-    ...require("./app"),
-    ...require("./model"),
-    ...require("./auth/Auth"),
+    ...require("./App"),
 }

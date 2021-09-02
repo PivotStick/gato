@@ -9,12 +9,10 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
-        "express": "^4.17.1",
         "jsonwebtoken": "^8.5.1",
         "mongodb": "^4.0.1"
     },
     "keywords": [
-        "express",
         "mongodb",
         "odm",
         "rest",
@@ -25,5 +23,16 @@
         "auth",
         "fun",
         "easy"
-    ]
+    ],
+    "exports": {
+        ".": {
+            "require": "./index.js"
+        },
+        "./errors": {
+            "require": "./errors/index.js"
+        },
+        "./models": {
+            "require": "./models/index.js"
+        }
+    }
 }

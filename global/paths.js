@@ -1,0 +1,4 @@
+global.paths = {
+    middlewares: "",
+    routes: "",
+}

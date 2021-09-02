@@ -1,9 +1,29 @@
-type Profile = (keyof typeof rights)[]
-type Profiles = { [k: string]: Profile }
+import { Db } from "mongodb"
+import { Profiles } from "./@types/Profiles"
+import { Roles } from "./@types/Roles"
+import { Auth } from "./models"
 
-type $$ = import("./@types").ControllerFile
+declare global {
+    namespace NodeJS {
+        export interface Global {
+            db: Db
 
-declare module globalThis {
-    export const $$: $$
-    export const profiles: Profiles
+            types: Map<
+                object,
+                {
+                    _constructor?: (v: any) => any
+                    _validator: (before: any, after: any) => boolean
+                }
+            >
+
+            paths: {
+                [K in "middlewares" | "routes"]: string
+            }
+
+            roles: Roles
+            profiles: Profiles
+
+            User: typeof Auth
+        }
+    }
 }

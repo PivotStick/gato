@@ -1,5 +1,1 @@
-import { Controller } from "./Controller"
-
-export type Method = {
-    [path: string]: Controller
-}
+export type Method = "get" | "post" | "patch" | "put" | "delete"

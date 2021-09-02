@@ -1,0 +1,3 @@
+global.profiles = {
+    anonymous: ["anonymous"],
+}

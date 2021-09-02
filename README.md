@@ -12,7 +12,7 @@ This library will make your life easy, just for fun!
 
 example of a full controller file
 
-`src/routes/books.js`
+`routes/books.js`
 
 ```js
 // no imports, no exports needed
@@ -24,6 +24,9 @@ $$.get = {
         return []
     }
 
+    /**
+     * @type {import("gatos").Handler<{}, { _id: string }>}
+     */
     "/:_id #get-by-id": async ({ params }) => {
         /** ... */
         return params
@@ -56,63 +59,53 @@ $$.delete = {
 
 ## Quick start
 
-`src/index.js`
+`index.js`
 
 ```js
 const { App } = require("gatos")
 
 // This generate absolute paths relative to this file
-new App({
-    routes: null, // "/Users/username/project/src/routes"
-    middlewares: null, // "/Users/username/project/src/middlewares"
-}).listen(3500)
+App.routes = "./routes" // "/Users/username/project/routes"
+App.middlewares = "./middlewares" // "/Users/username/project/middlewares"
+
+App.listen(3500)
 // Optional port argument
 // 7070 by default
 ```
 
 You can change the folders name.
 
-`src/index.js`
+`index.js`
 
 ```js
 const { App } = require("gatos")
 
-const options = {
-    dirNames: {
-        middlewares: "functions",
-        routes: "resolvers",
-    },
-}
+App.routes = "../resolvers"
+App.middlewares = "../sub_folder/functions"
 
-const architecture = {
-    resolvers: null,
-    sub_folder: {
-        functions: null,
-    },
-}
-
-new App(architecture, options).listen()
+App.listen()
 ```
 
 # Rights
 
 By default you are an anonymous, the anonymous has no rights.
-But you can change it with the `rights` global object.
+But you can change it with the `global.rights` global object.
 
 ### Example
 
-`src/index.js`
+`index.js`
 
 ```js
 const { App } = require("gatos")
 
 // (Use this for admin)
-rights.anonymous = "*" // it now has ALL RIGHTS on ALL ACTIONS of ALL CONTROLLERS
+global.rights.anonymous = "*" // it now has ALL RIGHTS on ALL ACTIONS of ALL CONTROLLERS
 
-new App({
-    routes: null,
-    middlewares: null,
-}).listen()
+App.routes = "./routes"
+App.middlewares = "./routes"
+
+// Clears the console before listening
+App.clear.listen()
 ```
 
 see ? simple.
@@ -120,21 +113,21 @@ see ? simple.
 let's move to his own file now
 you can create new rights
 
-`src/security/rights.js`
+`security/rights.js`
 
 ```js
-rights.anonymous = {
+global.rights.anonymous = {
     auth: "*",
 }
 
-rights.default = {
+global.rights.default = {
     auth: {
         "*": true,
         "create-account": false,
     },
 }
 
-rights.user = {
+global.rights.user = {
     books: {
         "get-all": true,
         "get-by-id": true,
@@ -142,18 +135,20 @@ rights.user = {
     },
 }
 
-rights.author = {
+global.rights.author = {
     books: "*",
 }
+
+global.rights.admin = "*"
 ```
 
 to use the new rights, you need to declare profiles
 
-`src/security/profiles.js`
+`security/profiles.js`
 
 ```js
-profiles.user = ["default", "user"]
-profiles.author = ["default", "author"]
+global.profiles.user = ["default", "user"]
+global.profiles.author = ["default", "author"]
 ```
 
 profiles can have many specific rights!
@@ -162,7 +157,7 @@ it is also very easy to create models for the mongodb!
 let's create a model folder
 where we create the **Book** model
 
-`src/models/Book.js`
+`models/Book.js`
 
 ```js
 const { Model } = require("gatos")
@@ -188,12 +183,8 @@ class Book extends Model {
         return this.pages.length
     }
 
-    // You have to do this for the model to work
-    // This constructor will be called when the document is fetched from the database
-    // You can manipulate the raw data before it is parsed
-    constructor(document) {
-        super(Book)
-        this.set(document)
+    toString() {
+        return `[${this.name}] - ${this.pageCount} pages`
     }
 
     static getSpecialBooks() {
@@ -210,7 +201,7 @@ easyyyyy
 
 now let's go back to the routes
 
-`src/routes/books.js`
+`routes/books.js`
 
 ```js
 const Book = require("../models/Book")
@@ -221,18 +212,28 @@ $$.get = {
     }
 
     "/:_id #get-by-id": async ({ params }) => {
-        return await Book.findOne(params)
+        /**
+         * You now have typings!
+         * @type {Book}
+         */
+        const book = await Book.findOne(params)
+
+        console.log(book.toString(), "found!")
+
+        return book
     }
 }
 
 $$.post = {
     /**
      * @description create a new book
+     * @type {import("gatos").Handler<{ name: string, pages: string[] }>}
      */
     "/ #create": async ({ body }) => {
         // Will throw an error if not present in body
         body.require("name")
-        body.require("pages")
+        // Will use the default value if not present in body
+        body.require("pages", [])
 
         return await Book.insertOne(body)
     }

@@ -1,65 +1,52 @@
-const express = require("express")
+const fs = require("fs")
+const { join } = require("path")
+const { Server } = require("./Server")
+const { Router } = require("./Router")
+const { Database } = require("./Database")
 
-const { safeFindDir } = require("./routes/architecture/findDir")
-const { useRouters } = require("./routes/router/useRouters")
-const { session } = require("./middlewares/session")
-const { errorHandler } = require("./middlewares/errorHandler")
-const { connect } = require("./database/connect")
-const { routeNotFound } = require("./middlewares/routeNotFound")
+const setPath = (key, path) => {
+    global.paths[key] = join(require.main.path, path)
+}
+
+let clear = false
 
 class App {
-    /** @type {import("express").Express} */
-    #app
-
-    /** @type {*} */
-    #architecture
-
-    /** @type {import("./types").Options} */
-    #options
-
-    /**
-     * @param {*} architecture
-     * @param {import("./types").Options} options
-     */
-    constructor(architecture, options = {}) {
-        this.#app = express()
-        this.#architecture = { [require.main.path]: architecture }
-        this.#options = options
-
-        global.paths._routes = this.#findDir("routes")
-        global.paths._middlewares = this.#findDir("middlewares")
-
-        this.#app.use(express.json())
-        this.#app.use(session)
-        useRouters(this.#app)
-        this.#app.use(routeNotFound)
-        this.#app.use(errorHandler)
+    static set middlewares(path) {
+        setPath("middlewares", path)
     }
 
-    /** @param {DirName} key */
-    #getDir(key) {
-        return this.#options?.dirNames?.[key] || key
+    static set routes(path) {
+        setPath("routes", path)
     }
 
-    /** @param {DirName} key */
-    #findDir(key) {
-        return safeFindDir(this.#architecture, this.#getDir(key))
+    static get clear() {
+        clear = true
+        return this
     }
 
-    async listen(
-        port = 7070,
-        callback = () => {
-            console.log(`http://localhost:${port}`)
+    static setRoutes() {
+        const path = global.paths.routes
+        if (!path) return
+
+        const routes = fs.readdirSync(path)
+        for (const route of routes) {
+            const prefix = route.replace(/\.\w+$/, "")
+            new Router(prefix)
+            require(join(path, route))
         }
+
+        Router.$$router = null
+    }
+
+    static async listen(
+        port = 7070,
+        callback = () => console.log(`listening at http://localhost:${port}`)
     ) {
-        global.mongo.db = await connect(this.#options.mongo?.url)
+        if (clear) console.clear()
+        await Database.connect("mongodb://localhost:27017/gatos")
 
-        console.clear()
-        console.log(
-            `\x1b[1m=== Connected to DB "${global.mongo.db.databaseName}" ===\n\x1b[0m`
-        )
-
-        this.#app.listen(port, callback)
+        this.setRoutes()
+        new Server().server.listen(port, callback)
     }
 }
 
