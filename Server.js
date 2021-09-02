@@ -47,6 +47,10 @@ class Server {
                 }
 
                 res.setHeader("content-type", "application/json")
+                res.setHeader("access-control-allow-origin", "*")
+                res.setHeader("access-control-allow-methods", "*")
+                res.setHeader("access-control-allow-headers", "*")
+
                 res.end(JSON.stringify(response))
             })
         })

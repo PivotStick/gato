@@ -15,7 +15,10 @@ class BodyParser {
      * @param {*} chunk
      */
     static parse(req, chunk) {
-        ;(this[req.headers["content-type"]] || this.unknown)(req, chunk)
+        const contentType = req.headers["content-type"]
+        if (!contentType) return
+        const parser = this[contentType] || this.unknown
+        parser(req, chunk)
     }
 }
 
