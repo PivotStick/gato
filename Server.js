@@ -10,6 +10,14 @@ class Server {
         this.server = createServer((req, res) => {
             const { path, query } = URL.parse(req.url)
             const method = req.method.toLowerCase()
+
+            res.setHeader("content-type", "application/json")
+            res.setHeader("access-control-allow-origin", "*")
+            res.setHeader("access-control-allow-methods", "*")
+            res.setHeader("access-control-allow-headers", "*")
+
+            if (method === "options") return res.end()
+
             const controller = Router.match(method, path)
 
             req.body = {}
@@ -45,11 +53,6 @@ class Server {
                 } catch (error) {
                     catchError(error)
                 }
-
-                res.setHeader("content-type", "application/json")
-                res.setHeader("access-control-allow-origin", "*")
-                res.setHeader("access-control-allow-methods", "*")
-                res.setHeader("access-control-allow-headers", "*")
 
                 res.end(JSON.stringify(response))
             })

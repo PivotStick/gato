@@ -46,9 +46,11 @@ class Router {
      */
     match(method, path) {
         const { prefix, endpoint } = URL.splitPath(path)
-        if (prefix !== this.prefix) return null
+        const controllers = this.controllers[method]
 
-        for (const controller of this.controllers[method]) {
+        if (prefix !== this.prefix || !controllers) return null
+
+        for (const controller of controllers) {
             if (controller.match(endpoint)) return controller
         }
     }
