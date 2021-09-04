@@ -59,14 +59,15 @@ $$.delete = {
 
 ## Quick start
 
-`index.js`
+`src/index.js`
 
 ```js
 const { App } = require("gatos")
 
 // This generate absolute paths relative to this file
-App.routes = "./routes" // "/Users/username/project/routes"
-App.middlewares = "./middlewares" // "/Users/username/project/middlewares"
+App.routes = "./routes" // "/Users/username/project/src/routes"
+App.middlewares = "./middlewares" // "/Users/username/project/src/middlewares"
+App.files = "../public/uploads" // "/Users/username/project/public/uploads"
 
 App.listen(3500)
 // Optional port argument
@@ -75,7 +76,7 @@ App.listen(3500)
 
 You can change the folders name.
 
-`index.js`
+`src/index.js`
 
 ```js
 const { App } = require("gatos")
@@ -93,7 +94,7 @@ But you can change it with the `$$rights` global object.
 
 ### Example
 
-`index.js`
+`src/index.js`
 
 ```js
 const { App } = require("gatos")
@@ -113,7 +114,7 @@ see ? simple.
 let's move to his own file now
 you can create new rights
 
-`security/rights.js`
+`src/security/rights.js`
 
 ```js
 $$rights.anonymous = {
@@ -144,7 +145,7 @@ $$rights.admin = "*"
 
 to use the new rights, you need to declare profiles
 
-`security/profiles.js`
+`src/security/profiles.js`
 
 ```js
 $$profiles.user = ["default", "user"]
@@ -153,11 +154,24 @@ $$profiles.author = ["default", "author"]
 
 profiles can have many specific rights!
 
+```js
+const { App } = require("gatos")
+
+// Load the configs!
+require("./security/roles")
+require("./security/profiles")
+
+App.routes = "./routes"
+App.middlewares = "./routes"
+
+App.clear.listen()
+```
+
 it is also very easy to create models for the mongodb!
 let's create a model folder
 where we create the **Book** model
 
-`models/Book.js`
+`src/models/Book.js`
 
 ```js
 const { Model } = require("gatos/models")
@@ -201,7 +215,7 @@ easyyyyy
 
 now let's go back to the routes
 
-`routes/books.js`
+`src/routes/books.js`
 
 ```js
 const Book = require("../models/Book")
@@ -248,6 +262,97 @@ $$.delete = {
         return await Book.deleteOne({ _id })
     }
 }
+```
+
+Let's create a user
+
+`src/models/User.js`
+
+```js
+const { Auth } = require("gatos/models")
+const Book = require("./Book")
+
+class User extends Auth {
+    username = String.prototype
+
+    firstName = String.prototype
+    lastName = String.prototype
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`
+    }
+}
+
+$$User = User // This part is important, it will let know gatos to use this class to find who you are with the json web token
+module.exports = User
+```
+
+`src/routes/auth.js`
+
+```js
+const User = require("../models/User")
+
+$$.get = {
+    "/ #get-current-user": ({ user }) => user,
+}
+
+$$.post = {
+    /** @type {import("gatos").Handler<{ username: string, password: string }>} */
+    "/login #login": ({ body }) =>
+        User.login({
+            identifier: body.require("username"),
+            password: body.require("password"),
+        }),
+
+    /**
+     * @type {import("gatos").Handler<{
+     *  username: string
+     *  lastName: string
+     *  firstName: string
+     *  password: string
+     * }>}
+     */
+    "/register #create-account": ({ body }) => {
+        body.require("username")
+        body.require("firstName")
+        body.require("lastName")
+        body.require("password")
+
+        return User.register(body)
+    },
+}
+```
+
+cool!
+
+but I prefer "email" as the identifier and not "username"
+_simple!_
+
+`src/models/User.js`
+
+```js
+const { Auth } = require("gatos/models")
+const Book = require("./Book")
+
+class User extends Auth {
+    email = String.prototype
+
+    firstName = String.prototype
+    lastName = String.prototype
+
+    // OOP is cool right?
+    // Just override the default getter, it was "username" by default :p
+    static get $$identifierKey() {
+        return "email"
+    }
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`
+    }
+}
+
+$$User = User
+module.exports = User
 ```
 
 # have fun!
