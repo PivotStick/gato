@@ -12,7 +12,7 @@ This library will make your life easy, just for fun!
 
 example of a full controller file
 
-`routes/books.js`
+`src/routes/books.js`
 
 ```js
 // no imports, no exports needed
