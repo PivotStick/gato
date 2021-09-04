@@ -250,10 +250,6 @@ $$.get = {
     }
 
     "/:_id #get-by-id": async ({ params }) => {
-        /**
-         * You now have typings!
-         * @type {Book}
-         */
         const book = await Book.findOne(params)
 
         console.log(book.toString(), "found!")
