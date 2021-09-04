@@ -167,6 +167,8 @@ App.middlewares = "./routes"
 App.clear.listen()
 ```
 
+# Models
+
 it is also very easy to create models for the mongodb!
 let's create a model folder
 where we create the **Book** model
@@ -263,6 +265,8 @@ $$.delete = {
     }
 }
 ```
+
+# Auth
 
 Let's create a user
 
