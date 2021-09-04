@@ -5,6 +5,10 @@ const { URL } = require("./utils/URL")
 /** @type {Router} */ let currentRouter = null
 
 class Router {
+    static get all() {
+        return routers
+    }
+
     static get $$router() {
         return currentRouter
     }

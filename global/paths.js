@@ -1,4 +1,4 @@
-global.paths = {
+globalThis.$$paths = {
     middlewares: "",
     routes: "",
 }

@@ -1,3 +1,3 @@
-global.roles = {
+globalThis.$$roles = {
     anonymous: {},
 }

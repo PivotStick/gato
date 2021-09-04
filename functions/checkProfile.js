@@ -7,7 +7,7 @@ const { checkRight } = require("./checkRight")
  * @returns {boolean}
  */
 exports.checkProfile = (profile, controller, action) => {
-    const roles = global.profiles[profile] || []
+    const roles = $$profiles[profile] || []
     for (let i = 0; i < roles.length; i++) {
         const role = roles[i]
         if (checkRight(role, controller, action)) return true

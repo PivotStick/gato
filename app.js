@@ -5,12 +5,16 @@ const { Router } = require("./Router")
 const { Database } = require("./Database")
 
 const setPath = (key, path) => {
-    global.paths[key] = join(require.main.path, path)
+    $$paths[key] = join(require.main.path, path)
 }
 
 let clear = false
 
 class App {
+    static get routers() {
+        return Router.all
+    }
+
     static set middlewares(path) {
         setPath("middlewares", path)
     }
@@ -25,7 +29,7 @@ class App {
     }
 
     static setRoutes() {
-        const path = global.paths.routes
+        const path = $$paths.routes
         if (!path) return
 
         const routes = fs.readdirSync(path)
@@ -40,10 +44,11 @@ class App {
 
     static async listen(
         port = 7070,
+        mongodbUrl = "mongodb://localhost:27017/gatos",
         callback = () => console.log(`listening at http://localhost:${port}`)
     ) {
         if (clear) console.clear()
-        await Database.connect("mongodb://localhost:27017/gatos")
+        await Database.connect(mongodbUrl)
 
         this.setRoutes()
         new Server().server.listen(port, callback)

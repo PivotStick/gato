@@ -59,7 +59,7 @@ class Key {
              * @type {import("../@types").Handler[]}
              */
             middlewares: middlewares.map((m) =>
-                require(join(global.paths.middlewares, m))
+                require(join($$paths.middlewares, m))
             ),
         }
     }

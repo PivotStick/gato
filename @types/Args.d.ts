@@ -1,12 +1,12 @@
-import { Auth, Anonymous } from "../models"
+import { Anonymous, Auth } from "../models"
 
 export type Args<
     Body = {},
     Params = {},
     Query = {},
-    User extends Auth = Auth
+    User = Auth | Anonymous
 > = {
-    user: User | Anonymous
+    user: User
 
     params: Params
     query: Query

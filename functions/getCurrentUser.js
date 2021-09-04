@@ -12,10 +12,9 @@ exports.getCurrentUser = async (req) => {
 
     try {
         const { _id } = JWT.verify(token)
-        const user = (await global.User.findOne({ _id })) || anonymous
-        user.password = undefined
-        return user
+        const user = (await $$User.findOne({ _id })) || anonymous
+        return user.removePrivateKeys()
     } catch (error) {
-        return anonymous
+        return anonymous.removePrivateKeys()
     }
 }

@@ -1,3 +1,3 @@
-global.profiles = {
+globalThis.$$profiles = {
     anonymous: ["anonymous"],
 }

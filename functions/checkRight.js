@@ -7,7 +7,7 @@ require("../global")
  * @returns {boolean}
  */
 exports.checkRight = (role, controller, action) => {
-    const controllers = global.roles[role] ?? {}
+    const controllers = $$roles[role] ?? {}
     if (controllers === "*") return true
 
     const actions = controllers[controller] ?? controllers["*"] ?? {}

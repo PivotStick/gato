@@ -6,7 +6,10 @@ class Database {
      */
     static async connect(url) {
         const client = await new MongoClient(url).connect()
-        global.db = client.db()
+        console.log(
+            `\x1b[1m== \x1b[34m\x1b[4m${url}\x1b[0m\x1b[1m connected! ==\n\x1b[0m`
+        )
+        globalThis.$$db = client.db()
     }
 }
 

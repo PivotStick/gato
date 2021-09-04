@@ -8,6 +8,17 @@ class Auth extends Model {
 
     password = String.prototype
 
+    /**
+     * @param {keyof typeof $$roles} role
+     */
+    hasRole(role) {
+        return this.profiles.includes(role)
+    }
+
+    get $$privateKeys() {
+        return ["password"]
+    }
+
     static get $$identifierKey() {
         return "username"
     }
@@ -53,5 +64,5 @@ class Auth extends Model {
     }
 }
 
-global.User = Auth
+globalThis.$$User = Auth
 exports.Auth = Auth

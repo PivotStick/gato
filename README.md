@@ -89,7 +89,7 @@ App.listen()
 # Rights
 
 By default you are an anonymous, the anonymous has no rights.
-But you can change it with the `global.rights` global object.
+But you can change it with the `$$rights` global object.
 
 ### Example
 
@@ -99,7 +99,7 @@ But you can change it with the `global.rights` global object.
 const { App } = require("gatos")
 
 // (Use this for admin)
-global.rights.anonymous = "*" // it now has ALL RIGHTS on ALL ACTIONS of ALL CONTROLLERS
+$$rights.anonymous = "*" // it now has ALL RIGHTS on ALL ACTIONS of ALL CONTROLLERS
 
 App.routes = "./routes"
 App.middlewares = "./routes"
@@ -116,18 +116,18 @@ you can create new rights
 `security/rights.js`
 
 ```js
-global.rights.anonymous = {
+$$rights.anonymous = {
     auth: "*",
 }
 
-global.rights.default = {
+$$rights.default = {
     auth: {
         "*": true,
         "create-account": false,
     },
 }
 
-global.rights.user = {
+$$rights.user = {
     books: {
         "get-all": true,
         "get-by-id": true,
@@ -135,11 +135,11 @@ global.rights.user = {
     },
 }
 
-global.rights.author = {
+$$rights.author = {
     books: "*",
 }
 
-global.rights.admin = "*"
+$$rights.admin = "*"
 ```
 
 to use the new rights, you need to declare profiles
@@ -147,8 +147,8 @@ to use the new rights, you need to declare profiles
 `security/profiles.js`
 
 ```js
-global.profiles.user = ["default", "user"]
-global.profiles.author = ["default", "author"]
+$$profiles.user = ["default", "user"]
+$$profiles.author = ["default", "author"]
 ```
 
 profiles can have many specific rights!

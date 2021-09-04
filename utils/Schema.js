@@ -1,3 +1,4 @@
+const { ObjectId } = require("bson")
 const { InvalidType } = require("../errors")
 
 class Schema {
@@ -37,19 +38,23 @@ class Schema {
             if (values.constructor !== Array) throwError()
 
             const type = schema[0]
-            values.forEach((v, i) => {
+            for (let i = 0; i < values.length; i++) {
                 values[i] = this.#validate(
                     type,
-                    v,
+                    values[i],
                     `${path}[\x1b[33m${i}\x1b[0m]`
                 )
-            })
+            }
 
             return values
         }
 
+        if (schema instanceof require("../models/Model").Model) {
+            schema = ObjectId.prototype
+        }
+
         const { _validator, _constructor = (v) => new schema.constructor(v) } =
-            global.types.get(schema.constructor)
+            $$types.get(schema.constructor)
 
         const after = _constructor(values)
         const isValid = _validator(values, after)

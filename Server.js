@@ -8,6 +8,7 @@ const { URL } = require("./utils/URL")
 class Server {
     constructor() {
         this.server = createServer((req, res) => {
+            req.url = req.url.replace(/\/+/g, "/")
             const { path, query } = URL.parse(req.url)
             const method = req.method.toLowerCase()
 
