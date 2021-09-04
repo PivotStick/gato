@@ -1,3 +1,27 @@
+```js
+const { App } = require("gatos")
+
+App.middlewares = "./middlewares"
+App.routes = "./routes"
+App.files = "../public/uploads"
+
+App.clear.listen()
+```
+
+```js
+$$.get = {
+    "/ #hello-world": () => "Hello World",
+}
+```
+
+```js
+const { Model } = require("gatos/models")
+
+module.exports = class Book extends Model {
+    title = String.prototype
+}
+```
+
 # GATOS
 
 `npm install gatos`
@@ -187,7 +211,7 @@ const { Model } = require("gatos/models")
 // No required properties but only the defined
 // properties will be accepted, it will throw
 // an error if it's not a valid value for a property
-class Book extends Model {
+module.exports = class Book extends Model {
     // We use the prototype property so we can have
     // the types on instantiated documents
     // (You will see that you can create your own types with their own validator & constructor)
@@ -209,8 +233,6 @@ class Book extends Model {
         })
     }
 }
-
-module.exports = Book
 ```
 
 easyyyyy
@@ -274,9 +296,14 @@ Let's create a user
 
 ```js
 const { Auth } = require("gatos/models")
-const Book = require("./Book")
 
-class User extends Auth {
+/**
+ * The `$$User` part is important,
+ * it will let know gatos to use
+ * this class to find who you are
+ * with the json web token
+ */
+$$User = module.exports = class User extends Auth {
     username = String.prototype
 
     firstName = String.prototype
@@ -286,9 +313,6 @@ class User extends Auth {
         return `${this.firstName} ${this.lastName}`
     }
 }
-
-$$User = User // This part is important, it will let know gatos to use this class to find who you are with the json web token
-module.exports = User
 ```
 
 `src/routes/auth.js`
@@ -336,9 +360,8 @@ _simple!_
 
 ```js
 const { Auth } = require("gatos/models")
-const Book = require("./Book")
 
-class User extends Auth {
+$$User = module.exports = class User extends Auth {
     email = String.prototype
 
     firstName = String.prototype
@@ -354,9 +377,6 @@ class User extends Auth {
         return `${this.firstName} ${this.lastName}`
     }
 }
-
-$$User = User
-module.exports = User
 ```
 
 # have fun!
