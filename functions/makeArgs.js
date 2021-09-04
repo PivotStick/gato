@@ -10,7 +10,7 @@ const { getCurrentUser } = require("./getCurrentUser")
  * @returns {import("../@types/Args").Args}
  */
 exports.makeArgs = async (req, res, query, params = {}) => {
-    req.body.require = function (key, defaultValue) {
+    req.body.require = function require(key, defaultValue) {
         if (!(key in req.body)) {
             if (arguments.length !== 2)
                 throw new ApiError(400, `"${key}" is missing in the body`)
@@ -28,6 +28,7 @@ exports.makeArgs = async (req, res, query, params = {}) => {
         query,
         params,
 
+        files: req.files,
         body: req.body,
 
         $: {

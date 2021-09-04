@@ -4,12 +4,25 @@ export type Args<
     Body = {},
     Params = {},
     Query = {},
+    Files = "",
     User = Auth | Anonymous
 > = {
     user: User
 
     params: Params
     query: Query
+    files: {
+        [Name in Files]: {
+            filename: string
+            contentType: string
+            data: Buffer
+            /**
+             * @param path relative path from the "App.files = "..."" specified path
+             * @param filename name of the file, defaults to the real filename
+             */
+            upload(path?: string, filename: string): void
+        }
+    }
 
     body: Partial<Body> & {
         /**

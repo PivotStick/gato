@@ -23,6 +23,10 @@ class App {
         setPath("routes", path)
     }
 
+    static set files(path) {
+        setPath("files", path)
+    }
+
     static get clear() {
         clear = true
         return this

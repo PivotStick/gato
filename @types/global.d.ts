@@ -17,7 +17,7 @@ declare global {
     >
 
     const $$paths: {
-        [K in "middlewares" | "routes"]: string
+        [K in "middlewares" | "routes" | "files"]: string
     }
 
     const $$roles: Roles
