@@ -4,6 +4,9 @@
     "main": "index.js",
     "name": "gatos",
     "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
+    "repository": {
+        "url": "https://github.com/PivotStick/gatos"
+    },
     "description": "a very easy and fast way to declare a restful api with roles, auth and mongodb",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
