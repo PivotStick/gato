@@ -3,8 +3,8 @@ import { Args } from "./Args"
 
 export type Handler<
     Body = {},
-    Params = {},
-    Query = {},
-    Files = {},
+    Params = unknown,
+    Query = unknown,
+    Files = unknown,
     User = Auth | Anonymous
 > = (args: Args<Body, Params, Query, Files, User>) => Promise<any>

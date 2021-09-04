@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb")
+const { getValueFromPath } = require("../functions/getValueFromPath")
 const { toKebabCase } = require("../functions/toKebabCase")
 const { toPlural } = require("../functions/toPlural")
 const { Schema } = require("../utils/Schema")
@@ -28,7 +29,7 @@ const set = (M, doc) => {
  * @template T
  * @param {typeof Model} M
  * @param {T} object
- * @returns {T}
+ * @returns {Promise<T>}
  */
 const instantiate = (M, object) =>
     object?.constructor === Array
@@ -61,7 +62,7 @@ const castDeepId = (filter = {}, key = "_id") => {
 /**
  * @param {import("mongodb").Filter<import("bson").Document>} filter
  */
-const castId = (filter) => {
+const castId = (filter = {}) => {
     if (!("_id" in filter)) return
     castDeepId(filter)
 }
@@ -74,7 +75,30 @@ class Model {
         return this
     }
 
-    /** @returns {string[]} */
+    /** @type {typeof Model} */
+    get #Model() {
+        return this.constructor
+    }
+
+    update(update = {}) {
+        return this.#Model.updateOne({ _id: this._id }, update)
+    }
+
+    delete() {
+        return this.#Model.deleteOne({ _id: this._id })
+    }
+
+    /** @param {string} path */
+    async populate(path, removePrivateKeys = true) {
+        /** @type {Model | Model[]} */
+        const M = getValueFromPath(new this.#Model(), path)
+        this[path] = await (M.constructor === Array
+            ? M[0].constructor.find({ _id: { $in: this[path] } })
+            : M.constructor.findOne({ _id: this[path] }))
+
+        if (removePrivateKeys) this[path].removePrivateKeys()
+    }
+
     get $$privateKeys() {
         return []
     }
@@ -94,57 +118,43 @@ class Model {
         return $$db.collection(this.$$name)
     }
 
-    /** @param {Partial<Model>} doc */
     static insertOne(doc) {
         this.$$schema.validate(doc)
         return this.$$collection.insertOne(doc)
     }
 
-    /** @param {Partial<Model>[]} docs */
     static insertMany(docs) {
         docs.forEach(this.$$schema.validate)
         return this.$$collection.insertMany(docs)
     }
 
-    /**
-     * @param {import("mongodb").Filter<Model>} filter
-     * @returns {Promise<Model[]>}
-     */
     static async find(filter) {
         castId(filter)
         const docs = await this.$$collection.find(filter).toArray()
         return instantiate(this, docs)
     }
 
-    /**
-     * @param {import("mongodb").Filter<Model>} filter
-     * @returns {Promise<Model>}
-     */
     static async findOne(filter) {
         castId(filter)
         const doc = await this.$$collection.findOne(filter)
         return instantiate(this, doc)
     }
 
-    /** @param {import("mongodb").Filter<Model>} filter */
     static updateOne(filter, update) {
         castId(filter)
         return this.$$collection.updateOne(filter, update)
     }
 
-    /** @param {import("mongodb").Filter<Model>} filter */
     static updateMany(filter, update) {
         castId(filter)
         return this.$$collection.updateMany(filter, update)
     }
 
-    /** @param {import("mongodb").Filter<Model>} filter */
     static deleteOne(filter) {
         castId(filter)
         return this.$$collection.deleteOne(filter)
     }
 
-    /** @param {import("mongodb").Filter<Model>} filter */
     static deleteMany(filter) {
         castId(filter)
         return this.$$collection.deleteMany(filter)

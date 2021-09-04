@@ -49,9 +49,8 @@ class Schema {
             return values
         }
 
-        if (schema instanceof require("../models/Model").Model) {
+        if (schema instanceof require("../models/Model").Model)
             schema = ObjectId.prototype
-        }
 
         const { _validator, _constructor = (v) => new schema.constructor(v) } =
             $$types.get(schema.constructor)

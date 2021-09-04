@@ -1,16 +1,17 @@
+import { Filter } from "."
 import { Anonymous, Auth } from "../models"
 
 export type Args<
     Body = {},
-    Params = {},
-    Query = {},
-    Files = "",
+    Params = unknown,
+    Query = unknown,
+    Files = unknown,
     User = Auth | Anonymous
 > = {
     user: User
 
-    params: Params
-    query: Query
+    params: Record<Params, string>
+    query: Record<Query, string>
     files: {
         [Name in Files]: {
             filename: string
@@ -31,7 +32,7 @@ export type Args<
          *
          * @returns the value of the body's key
          */
-        require<Key extends keyof Body>(
+        require<Key extends keyof Filter<Body>>(
             key: Key,
             defaultValue?: Body[Key]
         ): Body[Key]
