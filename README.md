@@ -98,19 +98,6 @@ App.listen(3500)
 // 7070 by default
 ```
 
-You can change the folders name.
-
-`src/index.js`
-
-```js
-const { App } = require("gatos")
-
-App.routes = "../resolvers"
-App.middlewares = "../sub_folder/functions"
-
-App.listen()
-```
-
 # Rights
 
 By default you are an anonymous, the anonymous has no rights.
@@ -337,10 +324,12 @@ $$.post = {
      * }>}
      */
     "/register #create-account": ({ body }) => {
-        body.require("username")
-        body.require("firstName")
-        body.require("lastName")
-        body.require("password")
+        body.requireAll(
+            "username"
+            "firstName",
+            "lastName",
+            "password"
+        )
 
         return User.register(body)
     },
@@ -372,6 +361,86 @@ $$User = module.exports = class User extends Auth {
     get fullName() {
         return `${this.firstName} ${this.lastName}`
     }
+}
+```
+
+I want validation for my emails >:(
+Well...
+
+# Types
+
+`src/types/Email.js`
+
+```js
+const { Type } = require("gatos/types")
+
+/**
+ * This class now inherit a constructor(public value)
+ * and a getter called "raw" used to JSON response serialization
+ */
+module.exports = class Email extends Type {
+    /**
+     * @param {string} email
+     * @param {string} message
+     */
+    sendTo(email, message) {
+        console.log(`Sending ${message} to ${email} from ${this.value}!`)
+    }
+}
+
+/**
+ * Thats a pretty cool regex 😎
+ */
+Email.validator = (v) => /emailregex/.test(v)
+```
+
+`src/models/User.js`
+
+```js
+const { Auth } = require("gatos/models")
+const Email = require("../types/Email")
+
+$$User = module.exports = class User extends Auth {
+    /**
+     * as simple as that
+     * it will be instantiated when you get
+     * the document so you can use methods and all
+     * but serialized on server response (Email.raw getter)
+     */
+    email = Email.prototype
+
+    firstName = String.prototype
+    lastName = String.prototype
+
+    static get $$identifierKey() {
+        return "email"
+    }
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`
+    }
+}
+```
+
+Let's see...
+
+`src/routes/auth.js`
+
+```js
+const User = require("../models/User")
+
+$$.get = {
+    "/ #get-current-user": ({ user }) => user,
+}
+
+$$.post = {
+    /** @type {import("gatos").Handler<{ message: string }, "email">} */
+    "/emails/:email": ({ user, body, params }) => {
+        const message = body.require("message")
+        user.email.sendTo(params.email, message) // console.log(`${message} to ${email} from ${this.value}!`)
+    },
+
+    /** ... */
 }
 ```
 

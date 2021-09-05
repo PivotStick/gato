@@ -8,14 +8,15 @@ class Auth extends Model {
 
     password = String.prototype
 
-    /**
-     * @param {keyof typeof $$roles} role
-     */
     hasRole(role) {
         return this.profiles.includes(role)
     }
 
-    get $$privateKeys() {
+    static get $$name() {
+        return "users"
+    }
+
+    static get $$privateKeys() {
         return ["password"]
     }
 
@@ -23,11 +24,7 @@ class Auth extends Model {
         return "username"
     }
 
-    /**
-     * @param {Record<"identifier" | "password", string>} param0
-     */
     static async login({ identifier, password }) {
-        /** @type {Auth} */
         const user = await this.findOne({
             [this.$$identifierKey]: identifier,
         })
@@ -41,11 +38,12 @@ class Auth extends Model {
         return JWT.sign({ _id: user._id })
     }
 
-    /**
-     * @param {string[]} profiles
-     * @param {Record<"identifier" | "password", string> & Record<string, any>} param1
-     */
-    static async register(profiles, { identifier, password, ...props }) {
+    static async register({
+        [this.$$identifierKey]: identifier,
+        password,
+        profiles = [],
+        ...props
+    }) {
         const user = await this.findOne({
             [this.$$identifierKey]: identifier,
         })
@@ -57,7 +55,7 @@ class Auth extends Model {
 
         return await this.insertOne({
             ...props,
-            profiles: profiles || [],
+            profiles,
             [this.$$identifierKey]: identifier,
             password: await Crypto.hash(password),
         })

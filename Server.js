@@ -2,6 +2,7 @@ const { createServer } = require("http")
 const { ApiError, RouteNotFound, UnknownError } = require("./errors")
 const { makeArgs } = require("./functions/makeArgs")
 const { Router } = require("./Router")
+const { Type } = require("./types/Type")
 const { BodyParser } = require("./utils/BodyParser")
 const { URL } = require("./utils/URL")
 
@@ -55,7 +56,11 @@ class Server {
                     catchError(error)
                 }
 
-                res.end(JSON.stringify(response))
+                res.end(
+                    JSON.stringify(response, function (_, value) {
+                        return value instanceof Type ? value.raw : value
+                    })
+                )
             })
         })
     }

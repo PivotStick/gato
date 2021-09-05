@@ -12,7 +12,7 @@ const set = (M, doc) => {
     if (!doc) return
 
     const object = new M()
-    M.$$schema.validate(doc)
+    M.$$schema.validate(doc, false)
     for (const key in object) {
         if (!(key in doc)) {
             delete object[key]
@@ -67,11 +67,22 @@ const castId = (filter = {}) => {
     castDeepId(filter)
 }
 
+/**
+ * @param {typeof Model} M
+ */
+const addDescriminator = (M, { document, filter }) => {
+    if (M.$$descriminator === false) return filter
+    const _$ = toKebabCase(M.name)
+    if (document) return (document._$ = _$)
+
+    return { $and: [filter, { _$: _$ }] }
+}
+
 class Model {
     _id = ObjectId.prototype
 
     removePrivateKeys() {
-        this.$$privateKeys.forEach((key) => delete this[key])
+        this.#Model.$$privateKeys.forEach((key) => delete this[key])
         return this
     }
 
@@ -99,7 +110,11 @@ class Model {
         if (removePrivateKeys) this[path].removePrivateKeys()
     }
 
-    get $$privateKeys() {
+    static get $$descriminator() {
+        return false
+    }
+
+    static get $$privateKeys() {
         return []
     }
 
@@ -118,45 +133,55 @@ class Model {
         return $$db.collection(this.$$name)
     }
 
-    static insertOne(doc) {
-        this.$$schema.validate(doc)
-        return this.$$collection.insertOne(doc)
+    static insertOne(document) {
+        this.$$schema.validate(document)
+        addDescriminator(this, { document })
+        return this.$$collection.insertOne(document)
     }
 
-    static insertMany(docs) {
-        docs.forEach(this.$$schema.validate)
-        return this.$$collection.insertMany(docs)
+    static insertMany(documents) {
+        documents.forEach((document) => {
+            this.$$schema.validate(document)
+            addDescriminator(this, { document })
+        })
+        return this.$$collection.insertMany(documents)
     }
 
-    static async find(filter) {
+    static async find(filter = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         const docs = await this.$$collection.find(filter).toArray()
         return instantiate(this, docs)
     }
 
-    static async findOne(filter) {
+    static async findOne(filter = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         const doc = await this.$$collection.findOne(filter)
         return instantiate(this, doc)
     }
 
-    static updateOne(filter, update) {
+    static updateOne(filter = {}, update = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         return this.$$collection.updateOne(filter, update)
     }
 
-    static updateMany(filter, update) {
+    static updateMany(filter = {}, update = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         return this.$$collection.updateMany(filter, update)
     }
 
-    static deleteOne(filter) {
+    static deleteOne(filter = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         return this.$$collection.deleteOne(filter)
     }
 
-    static deleteMany(filter) {
+    static deleteMany(filter = {}) {
         castId(filter)
+        filter = addDescriminator(this, { filter })
         return this.$$collection.deleteMany(filter)
     }
 }

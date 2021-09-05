@@ -25,7 +25,7 @@ export type Args<
         }
     }
 
-    body: Partial<Body> & {
+    body: Partial<Filter<Body>> & {
         /**
          * This will throw an error if this key is not found in the body,
          * expect if the defaultValue is provided.
@@ -36,6 +36,8 @@ export type Args<
             key: Key,
             defaultValue?: Body[Key]
         ): Body[Key]
+
+        requireAll<Key extends keyof Filter<Body>>(...keys: Key[]): Filter<Body>
     }
 
     $: {

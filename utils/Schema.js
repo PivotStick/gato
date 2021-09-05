@@ -2,6 +2,8 @@ const { ObjectId } = require("bson")
 const { InvalidType } = require("../errors")
 
 class Schema {
+    insert = true
+
     constructor(schema, name = "Schema") {
         this.schema = schema
         this.name = name
@@ -52,10 +54,13 @@ class Schema {
         if (schema instanceof require("../models/Model").Model)
             schema = ObjectId.prototype
 
-        const { _validator, _constructor = (v) => new schema.constructor(v) } =
-            $$types.get(schema.constructor)
+        const {
+            _validator,
+            _constructor = (v) => new schema.constructor(v),
+            _insert = _constructor,
+        } = $$types.get(schema.constructor)
 
-        const after = _constructor(values)
+        const after = this.insert ? _insert(values) : _constructor(values)
         const isValid = _validator(values, after)
 
         if (!isValid) throwError()
@@ -63,7 +68,8 @@ class Schema {
         return after
     }
 
-    validate(values) {
+    validate(values, insert = true) {
+        this.insert = insert
         this.#validate(this.schema, values)
         return values
     }

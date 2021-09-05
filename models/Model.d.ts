@@ -6,10 +6,11 @@ import {
     InsertOneResult,
     UpdateFilter,
     UpdateResult,
+    ObjectId,
 } from "mongodb"
 import { Only } from "../@types"
 
-type Props<T> = Only<Omit<T, "$$privateKeys">, Function>
+type Props<T> = Only<T, Function>
 
 type UpdateOf<T> = UpdateFilter<Props<T>>
 type FilterOf<T> = Filter<Props<T>>
@@ -23,11 +24,11 @@ export class Model {
     removePrivateKeys(): this
     update(update: UpdateOf<this> = {}): Promise<UpdateResult>
     delete(): Promise<DeleteResult>
-    populate(path: string, removePrivateKeys = true): void
-
-    get $$privateKeys(): keyof this[]
+    populate(path: string, removePrivateKeys = true): Promise<void>
 
     static get $$name(): string
+    static get $$privateKeys(): string
+    static get $$descriminator(): boolean
 
     static get $$collection<T extends typeof Model>(
         this: T

@@ -11,6 +11,7 @@ declare global {
     const $$types: Map<
         object,
         {
+            _insert?: (v: any) => any
             _constructor?: (v: any) => any
             _validator: (before: any, after: any) => boolean
         }

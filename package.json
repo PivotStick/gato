@@ -36,6 +36,9 @@
         },
         "./models": {
             "require": "./models/index.js"
+        },
+        "./types": {
+            "require": "./types/index.js"
         }
     }
 }

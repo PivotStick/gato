@@ -21,6 +21,24 @@ exports.makeArgs = async (req, res, query, params = {}) => {
         return req.body[key]
     }
 
+    req.body.requireAll = function requireAll(...keys) {
+        const missingKeys = []
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i]
+            if (!(key in req.body)) missingKeys.push(key)
+        }
+
+        if (missingKeys.length) {
+            const word = missingKeys.length > 1 ? "are" : "is"
+            throw new ApiError(
+                400,
+                `"${missingKeys.join(", ")}" ${word} missing in the body`
+            )
+        }
+
+        return req.body
+    }
+
     const user = await getCurrentUser(req)
 
     return {
