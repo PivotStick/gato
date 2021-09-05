@@ -435,9 +435,11 @@ $$.get = {
 
 $$.post = {
     /** @type {import("gatos").Handler<{ message: string }, "email">} */
-    "/emails/:email": ({ user, body, params }) => {
+    "/emails/:email #send-email-to": ({ user, body, params }) => {
         const message = body.require("message")
         user.email.sendTo(params.email, message) // console.log(`${message} to ${email} from ${this.value}!`)
+
+        return user // the "email" property will be the "email.raw" automatically
     },
 
     /** ... */
