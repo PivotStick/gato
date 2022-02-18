@@ -1,5 +1,11 @@
 class ApiError {
-    constructor(status = 400, message = "BAD REQUEST") {
+    /**
+     * @param {string} id
+     * @param {number} status
+     * @param {string} message
+     */
+    constructor(id, status = 400, message = "BAD REQUEST") {
+        this.id = id
         this.status = status
         this.message = message
     }

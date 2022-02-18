@@ -60,6 +60,13 @@ class Auth extends Model {
             password: await Crypto.hash(password),
         })
     }
+
+    async updatePassword(password) {
+        this.password = await Crypto.hash(password)
+        return await this.update({
+            $set: { password: this.password },
+        })
+    }
 }
 
 globalThis.$$User = Auth

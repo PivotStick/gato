@@ -5,7 +5,7 @@ class UnknownError extends ApiError {
      * @param {Error} error
      */
     constructor(error) {
-        super(500, "Unknown Error")
+        super("error.unknown", 500, "Unknown Error")
         this.error = {
             ...error,
             message: error.message,
