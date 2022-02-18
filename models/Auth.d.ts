@@ -17,4 +17,6 @@ export class Auth extends Model {
         this: T,
         payload: Payload<T>
     ): Promise<InsertOneResult<InstanceType<T>>>
+
+    async updatePassword(password: string): ReturnType<Model["update"]>
 }
