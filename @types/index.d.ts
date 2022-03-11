@@ -7,6 +7,7 @@ export * from "./Roles"
 export * from "./Only"
 export * from "./Filter"
 export * from "./Typed"
+export * from "./SocketHandler"
 
 export * from "./$$"
 export * from "./global"

@@ -43,7 +43,7 @@ example of a full controller file
 
 // get endpoints
 $$.get = {
-    "/ #get-all-books": async () => {
+    "/ #get-all": async () => {
         /** ... */
         return []
     }
@@ -98,10 +98,10 @@ App.listen(3500)
 // 7070 by default
 ```
 
-# Rights
+# Roles
 
-By default you are an anonymous, the anonymous has no rights.
-But you can change it with the `$$rights` global object.
+By default you are an anonymous, the anonymous has no roles.
+But you can change it with the `$$roles` global object.
 
 ### Example
 
@@ -111,7 +111,7 @@ But you can change it with the `$$rights` global object.
 const { App } = require("gatos")
 
 // (Use this for admin)
-$$rights.anonymous = "*" // it now has ALL RIGHTS on ALL ACTIONS of ALL CONTROLLERS
+$$roles.anonymous = "*" // it now has ALL roles on ALL ACTIONS of ALL CONTROLLERS
 
 App.routes = "./routes"
 App.middlewares = "./routes"
@@ -123,23 +123,23 @@ App.clear.listen()
 see ? simple.
 
 let's move to his own file now
-you can create new rights
+you can create new roles
 
-`src/security/rights.js`
+`src/security/roles.js`
 
 ```js
-$$rights.anonymous = {
+$$roles.anonymous = {
     auth: "*",
 }
 
-$$rights.default = {
+$$roles.default = {
     auth: {
         "*": true,
         "create-account": false,
     },
 }
 
-$$rights.user = {
+$$roles.user = {
     books: {
         "get-all": true,
         "get-by-id": true,
@@ -147,14 +147,14 @@ $$rights.user = {
     },
 }
 
-$$rights.author = {
+$$roles.author = {
     books: "*",
 }
 
-$$rights.admin = "*"
+$$roles.admin = "*"
 ```
 
-to use the new rights, you need to declare profiles
+to use the new roles, you need to declare profiles
 
 `src/security/profiles.js`
 
@@ -163,7 +163,7 @@ $$profiles.user = ["default", "user"]
 $$profiles.author = ["default", "author"]
 ```
 
-profiles can have many specific rights!
+profiles can have many specific roles!
 
 ```js
 const { App } = require("gatos")

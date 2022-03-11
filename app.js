@@ -3,17 +3,20 @@ const { join } = require("path")
 const { Server } = require("./Server")
 const { Router } = require("./Router")
 const { Database } = require("./Database")
+const { generateEvents } = require("./functions/generateEvents")
 
 const setPath = (key, path) => {
     $$paths[key] = join(require.main.path, path)
 }
 
 let clear = false
+const server = new Server().server
 
 class App {
-    static get routers() {
-        return Router.all
-    }
+    /**
+     * @type {Server}
+     */
+    static io = null
 
     static set middlewares(path) {
         setPath("middlewares", path)
@@ -25,6 +28,14 @@ class App {
 
     static set files(path) {
         setPath("files", path)
+    }
+
+    static set sockets(path) {
+        setPath("sockets", path)
+        this.io = new (require("socket.io").Server)(server, {
+            cors: "*",
+        })
+        generateEvents(io)
     }
 
     static get clear() {
@@ -55,7 +66,7 @@ class App {
         await Database.connect(mongodbUrl)
 
         this.setRoutes()
-        new Server().server.listen(port, callback)
+        server.listen(port, callback)
     }
 }
 
