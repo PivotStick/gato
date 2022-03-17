@@ -24,7 +24,7 @@ class Server {
 
             req.body = {}
             req.files = {}
-            let data
+            let data = ""
             let response = {
                 [req.method]: req.url,
             }
@@ -44,7 +44,7 @@ class Server {
             }
 
             req.on("data", (chunk) => {
-                data = chunk
+                data += chunk
             }).on("end", async () => {
                 try {
                     BodyParser.parse(req, data)
@@ -56,11 +56,7 @@ class Server {
                     catchError(error)
                 }
 
-                res.end(
-                    JSON.stringify(response, function (_, value) {
-                        return value instanceof Type ? value.raw : value
-                    })
-                )
+                res.end(JSON.stringify(response))
             })
         })
     }
