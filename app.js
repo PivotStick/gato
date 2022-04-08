@@ -14,7 +14,7 @@ const server = new Server().server
 
 class App {
     /**
-     * @type {Server}
+     * @type {import("socket.io").Server}
      */
     static io = null
 
