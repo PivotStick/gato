@@ -35,7 +35,7 @@ class App {
         this.io = new (require("socket.io").Server)(server, {
             cors: "*",
         })
-        generateEvents(io)
+        generateEvents(this.io)
     }
 
     static get clear() {
