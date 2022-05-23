@@ -1,5 +1,3 @@
-import { Handler } from "./Handler"
+import { Controller } from "./Controller"
 
-export type Schema = {
-    [key: string]: Handler
-}
+export type Schema = Record<string, Controller>

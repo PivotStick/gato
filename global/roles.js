@@ -1,3 +1,0 @@
-globalThis.$$roles = {
-    anonymous: {},
-}
