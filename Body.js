@@ -3,15 +3,16 @@ const { ObjectId } = require("mongodb")
 const { join } = require("path")
 const { extension } = require("mime-types")
 const uploadDir = require("./uploadDir")
+const { ApiError } = require("./errors")
 
 module.exports = class Body {
   constructor() {}
 
-  $require(key, defaultValue) {
+  $get(key, defaultValue) {
     const value = this[key] || defaultValue
 
     if (value === undefined) {
-      throw new Error(`"${key}" is required`)
+      throw new ApiError(`${key}.required`, 400, `"${key}" is required`)
     }
 
     return value
@@ -22,13 +23,13 @@ module.exports = class Body {
 
     return Promise.all(
       keys.map(async (key) => {
-        const dataUrl = this.$require(key)
+        const dataUrl = this.$get(key)
 
         const [meta, data] = dataUrl.split(",")
         const [, mimeType, encoding] = /^data:(.+\/.+);(.*)$/.exec(meta) || []
 
         if (!mimeType) {
-          throw new Error("Invalid dataUrl")
+          throw new ApiError(`${key}.invalid_data-url`, 400, "Invalid dataUrl")
         }
 
         const buffer = Buffer.from(data, encoding)

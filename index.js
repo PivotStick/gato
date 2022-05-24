@@ -9,6 +9,7 @@ const { generateRoutes, routes } = require("./routes")
 const { getUserModel, getUser } = require("./getUser")
 const Body = require("./Body")
 const { hasRights, roles, profiles } = require("./functions/hasRights")
+const { RouteNotFound, ApiError, UnknownError } = require("./errors")
 
 const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
   new Promise(async (resolve, reject) => {
@@ -34,6 +35,12 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
 
       headers.set("Content-Type", "application/json")
 
+      /**
+       * @type {{
+       *  error?: ApiError
+       *  result?: any
+       * }}
+       */
       let res
       let body = ""
 
@@ -85,14 +92,10 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
                   }),
                 }
               } catch (error) {
-                response.statusCode = error.status || 500
-                res = {
-                  error: {
-                    message: error.message,
-                    stack: error.stack,
-                    ...error,
-                  },
+                if (!(error instanceof ApiError)) {
+                  error = new UnknownError(error)
                 }
+                res = { error }
               } finally {
                 break
               }
@@ -100,16 +103,12 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
           }
 
           if (!res) {
-            response.statusCode = 404
-            res = {
-              error: {
-                message: "Not Found",
-              },
-            }
+            res = { error: new RouteNotFound() }
           }
 
           if (res.error) {
             headers.set("Content-Type", "application/json")
+            response.statusCode = res.error.status || 500
           }
 
           headers.forEach((value, key) => response.setHeader(key, value))

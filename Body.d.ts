@@ -1,5 +1,5 @@
 class Body<T = {}> {
-  $require<K extends keyof T>(key: K, defaultValue: T[K]): T[K]
+  $get<K extends keyof T>(key: K, defaultValue: T[K]): T[K]
 
   /**
    * @param keys The keys of the properties to get. Defaults to `"dataURL"`

@@ -1,3 +1,5 @@
+const { ForbiddenError } = require("../errors")
+
 const roles = new Map()
 const profiles = new Map()
 
@@ -29,7 +31,7 @@ exports.hasRights = (userProfiles, controller, action) => {
         return
 
       if (!schema?.[controller]?.[action]) {
-        throw new Error("Forbidden")
+        throw new ForbiddenError()
       }
     }
   }
