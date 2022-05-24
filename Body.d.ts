@@ -6,7 +6,7 @@ class Body<T = {}> {
    *
    * @returns The generated names of the uploaded files.
    */
-  $dataURLToFile<K extends keyof T>(...keys: K[]): Promise<string[]>
+  $dataURLsToFiles<K extends keyof T>(...keys: K[]): Promise<string[]>
 }
 
 export default Body

@@ -17,18 +17,27 @@ methods.forEach((method) => {
       const map = (exports.routes[method] = exports.routes[method] || new Map())
 
       Object.keys(schema).forEach((key) => {
-        const endpoint = `^/${currentBase}/${key}/?$`
+        const [path, name] = key.split(/\s+/g)
+        const endpoint = `^/${currentBase}/${path}/?$`
           .replace(/\/+/g, "\\/")
           .replace(/:([^\\/]+)/g, "(?<$1>[^/]+)")
 
-        map.set(new RegExp(endpoint, "i"), schema[key])
+        map.set(new RegExp(endpoint, "i"), {
+          controller: schema[key],
+          actionName: name?.startsWith("#") ? name.slice(1) : undefined,
+          base: currentBase,
+        })
       })
     },
   })
 })
 
 /**
- * @type {Record<typeof methods[number], Map<RegExp, import("./@types/Controller").Controller>>}
+ * @type {Record<typeof methods[number], Map<RegExp, {
+ *    controller: import("./@types").Controller
+ *    actionName: string;
+ *    base: string
+ * }>>}
  */
 exports.routes = {}
 

@@ -8,10 +8,18 @@ const http = require("http")
 const { generateRoutes, routes } = require("./routes")
 const { getUserModel, getUser } = require("./getUser")
 const Body = require("./Body")
+const { hasRights, roles, profiles } = require("./functions/hasRights")
 
 const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
   new Promise(async (resolve, reject) => {
     const server = http.createServer(async (request, response) => {
+      response.setHeader("Access-Control-Allow-Origin", "*")
+      response.setHeader("Access-Control-Allow-Methods", "*")
+      response.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization"
+      )
+
       if (request.method === "OPTIONS") {
         response.end()
         return
@@ -22,14 +30,7 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
 
       /** @type {typeof routes["get"]} */
       const controllers = routes[request.method.toLowerCase()] || new Map()
-
       const headers = new Map(Object.entries(response.getHeaders()))
-      headers.set("Access-Control-Allow-Origin", "*")
-      headers.set(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE, OPTIONS"
-      )
-      headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
       headers.set("Content-Type", "application/json")
 
@@ -54,15 +55,18 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
               body = JSON.parse(body) || {}
             } catch (error) {}
 
-            for (const [regex, controller] of controllers.entries()) {
+            for (const [regex, route] of controllers.entries()) {
               const match = regex.exec(url.pathname)
               if (!match) continue
 
               try {
                 Object.setPrototypeOf(body, Body.prototype)
+                const user = await getUser(request)
+
+                hasRights(user.profiles, route.base, route.actionName)
 
                 res = {
-                  result: await controller({
+                  result: await route.controller({
                     $: {
                       set status(code) {
                         response.statusCode = code
@@ -77,7 +81,7 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
                     body,
                     params: { ...(match.groups || {}) },
                     query: url.searchParams,
-                    user: await getUser(request),
+                    user,
                   }),
                 }
               } catch (error) {
@@ -142,6 +146,9 @@ module.exports = {
   set uploadDir(path) {
     require("./uploadDir").value = join(require.main.path, path)
   },
+
+  roles,
+  profiles,
 
   listen,
 }

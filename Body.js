@@ -17,7 +17,7 @@ module.exports = class Body {
     return value
   }
 
-  $dataURLToFile(...keys) {
+  $dataURLsToFiles(...keys) {
     keys = keys.length ? keys : ["dataURL"]
 
     return Promise.all(
