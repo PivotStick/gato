@@ -3,6 +3,7 @@ const { connect } = require("classy-mongo")
 const { readFile } = require("fs").promises
 const { lookup } = require("mime-types")
 const uploadDir = require("./uploadDir")
+const debug = require("./debug")
 
 const http = require("http")
 const { generateRoutes, routes } = require("./routes")
@@ -10,6 +11,8 @@ const { getUserModel, getUser } = require("./getUser")
 const Body = require("./Body")
 const { hasRights, roles, profiles } = require("./functions/hasRights")
 const { RouteNotFound, ApiError, UnknownError } = require("./errors")
+
+let clear = false
 
 const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
   new Promise(async (resolve, reject) => {
@@ -25,6 +28,12 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
         response.end()
         return
       }
+
+      debug.log(
+        `\n\x1b[2m\x1b[1m${request.method.toUpperCase()}\x1b[0m\x1b[2m ${
+          request.url
+        }\x1b[0m`
+      )
 
       const url = new URL(request.url, `http://${request.headers.host}`)
       const match = /^\/(.*\.\w+)\/?$/.exec(url.pathname)
@@ -120,8 +129,13 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
         })
     })
 
+    if (clear) debug.clear()
     await connect(mongoUri)
-    server.listen(port, resolve)
+    debug.log("\n\x1b[1m\x1b[32m\x1b[3m✓ Connected to MongoDB\x1b[0m")
+    server.listen(port, () => {
+      debug.log(`@ \x1b[4m\x1b[3mhttp://locahost:${port}\x1b[0m`)
+      resolve()
+    })
   })
 
 module.exports = {
@@ -148,6 +162,11 @@ module.exports = {
 
   roles,
   profiles,
+
+  get clear() {
+    clear = true
+    return this
+  },
 
   listen,
 }
