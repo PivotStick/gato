@@ -73,10 +73,10 @@ buffer@^5.6.0:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
 
-classy-mongo@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/classy-mongo/-/classy-mongo-0.0.7.tgz#5e2dccf4e8413e664a5867edc4ba4b843deb70f6"
-  integrity sha512-gPUo/0EL3k4+nNXnNmSpD4XCdStmr1AfqizeBv1B0ex/VYiUvEKZ5Fv0xi8SKacT/ryvwLeMM6ja5piuXZwjlQ==
+classy-mongo@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/classy-mongo/-/classy-mongo-0.0.8.tgz#5f939061c6c1259c59b87365128afd9461176f8f"
+  integrity sha512-H3iJ0awuiJk/0oeCoe6Rpx2zhzlUMh2TTx/6GKhfqG501Er2Z7oBxz06QCMAQw+wO+363gOh0W9WKKUTkRFnkA==
   dependencies:
     mongodb "^4.3.1"
 
