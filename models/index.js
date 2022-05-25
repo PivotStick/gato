@@ -1,5 +1,5 @@
 const { Model } = require("classy-mongo")
-const { crypto } = require("..")
+const crypto = require("../crypto")
 const { ApiError } = require("../errors")
 const { sign } = require("../jwt")
 const { GATOS_USER_IDENTIFIER_KEY: key = "username" } = process.env
