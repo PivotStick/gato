@@ -1,20 +1,20 @@
 const { Model } = require("classy-mongo")
-const crypto = require("../crypto")
 const { ApiError } = require("../errors")
 const { sign } = require("../jwt")
 const { GATOS_USER_IDENTIFIER_KEY: key = "username" } = process.env
+const crypto = require("../crypto")
 
 class Auth extends Model {
   profiles = [String.prototype]
 
   /**
-   * @param {string} newPassword 
+   * @param {string} newPassword
    */
-  updatePassword(newPassword) {
-    return this.update({
+  async updatePassword(newPassword) {
+    return await this.update({
       $set: {
         password: await crypto.hash(newPassword),
-      }
+      },
     })
   }
 
