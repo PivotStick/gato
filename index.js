@@ -168,5 +168,7 @@ module.exports = {
     return this
   },
 
+  crypto: require("./crypto"),
+
   listen,
 }

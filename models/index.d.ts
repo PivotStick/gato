@@ -1,9 +1,11 @@
-import { InsertOneResult } from "mongodb"
+import { InsertOneResult, UpdateResult } from "mongodb"
 
 export { Model } from "classy-mongo"
 
 export class Auth extends Model {
   profiles = [String.prototype]
+
+  updatePassword(password: string): Promise<UpdateResult>
 
   static register<T extends typeof Auth>(
     this: T,

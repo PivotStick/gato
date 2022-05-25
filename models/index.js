@@ -1,10 +1,22 @@
 const { Model } = require("classy-mongo")
+const { crypto } = require("..")
 const { ApiError } = require("../errors")
 const { sign } = require("../jwt")
 const { GATOS_USER_IDENTIFIER_KEY: key = "username" } = process.env
 
 class Auth extends Model {
   profiles = [String.prototype]
+
+  /**
+   * @param {string} newPassword 
+   */
+  updatePassword(newPassword) {
+    return this.update({
+      $set: {
+        password: await crypto.hash(newPassword),
+      }
+    })
+  }
 
   /**
    * @type {<T extends typeof Auth>(this: T, document: InstanceType<T>) => Promise<import("mongodb").InsertOneResult<InstanceType<T>>>}
@@ -23,7 +35,7 @@ class Auth extends Model {
     const casted = this.cast(document)
     return this.collection.insertOne({
       ...casted,
-      password: document.password,
+      password: await crypto.hash(document.password),
     })
   }
 
@@ -35,7 +47,7 @@ class Auth extends Model {
   static async login(credentials) {
     const user = await this.collection.findOne({ [key]: credentials[key] })
 
-    if (!user || user.password !== credentials.password) {
+    if (!user || (await crypto.compare(credentials.password, user.password))) {
       throw new ApiError("credentials.invalid", 400, "Invalid credentials")
     }
 
