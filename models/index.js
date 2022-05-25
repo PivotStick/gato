@@ -47,7 +47,7 @@ class Auth extends Model {
   static async login(credentials) {
     const user = await this.collection.findOne({ [key]: credentials[key] })
 
-    if (!user || (await crypto.compare(credentials.password, user.password))) {
+    if (!user || !(await crypto.compare(credentials.password, user.password))) {
       throw new ApiError("credentials.invalid", 400, "Invalid credentials")
     }
 
