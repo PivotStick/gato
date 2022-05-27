@@ -27,10 +27,6 @@ exports.compare = (password, hash) =>
 
     crypto.scrypt(password, salt, keylen, (err, derivedKey) => {
       if (err) return reject(err)
-      const equality = crypto.timingSafeEqual(
-        derivedKey,
-        Buffer.from(key, encoding)
-      )
-      resolve(equality)
+      resolve(key === derivedKey)
     })
   })

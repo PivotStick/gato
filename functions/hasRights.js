@@ -26,13 +26,12 @@ exports.hasRights = (userProfiles, controller, action) => {
       if (
         schema === "*" ||
         schema?.[controller] === "*" ||
-        schema?.[controller]?.[action] === "*"
+        schema?.[controller]?.[action] === "*" ||
+        schema?.[controller]?.[action] === true
       )
         return
-
-      if (!schema?.[controller]?.[action]) {
-        throw new ForbiddenError()
-      }
     }
   }
+
+  throw new ForbiddenError()
 }

@@ -11,6 +11,7 @@ const { getUserModel, getUser } = require("./getUser")
 const Body = require("./Body")
 const { hasRights, roles, profiles } = require("./functions/hasRights")
 const { RouteNotFound, ApiError, UnknownError } = require("./errors")
+const { getCircularRemover } = require("./functions/getCircularRemover")
 
 let clear = false
 
@@ -123,7 +124,7 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
           headers.forEach((value, key) => response.setHeader(key, value))
           response.end(
             response.getHeader("Content-Type") === "application/json"
-              ? JSON.stringify(res)
+              ? JSON.stringify(res, getCircularRemover())
               : res.result
           )
         })
