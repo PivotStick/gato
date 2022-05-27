@@ -1,6 +1,6 @@
 {
     "license": "ISC",
-    "version": "0.3.9",
+    "version": "0.3.10",
     "main": "index.js",
     "name": "gatos",
     "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
