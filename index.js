@@ -12,6 +12,7 @@ const Body = require("./Body")
 const { hasRights, roles, profiles } = require("./functions/hasRights")
 const { RouteNotFound, ApiError, UnknownError } = require("./errors")
 const { getCircularRemover } = require("./functions/getCircularRemover")
+const { parseBody } = require("./functions/parseBody")
 
 let clear = false
 
@@ -52,10 +53,10 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
        * }}
        */
       let res
-      let body = ""
+      let data = ""
 
       request
-        .on("data", (chunk) => (body += chunk))
+        .on("data", (chunk) => (data += chunk))
         .on("end", async () => {
           if (match) {
             const fileName = match[1]
@@ -68,16 +69,17 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
               res = { error }
             }
           } else {
-            try {
-              body = JSON.parse(body) || {}
-            } catch (error) {}
+            request.body = {}
+            request.files = {}
+
+            parseBody(request, data)
 
             for (const [regex, route] of controllers.entries()) {
               const match = regex.exec(url.pathname)
               if (!match) continue
 
               try {
-                Object.setPrototypeOf(body, Body.prototype)
+                Object.setPrototypeOf(request.body, Body.prototype)
                 const user = await getUser(request)
 
                 hasRights(user.profiles, route.base, route.actionName)
@@ -95,7 +97,8 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
 
                       headers,
                     },
-                    body,
+                    body: request.body,
+                    files: request.files,
                     params: { ...(match.groups || {}) },
                     query: url.searchParams,
                     user,
