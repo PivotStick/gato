@@ -77,12 +77,12 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
               if (!match) continue
 
               try {
-                Object.setPrototypeOf(request.body, Body.prototype)
                 const user = await getUser(request)
 
                 hasRights(user.profiles, route.base, route.actionName)
 
                 await parseBody(request, data)
+                Object.setPrototypeOf(request.body, Body.prototype)
 
                 res = {
                   result: await route.controller({

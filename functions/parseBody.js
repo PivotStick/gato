@@ -8,7 +8,9 @@ const { join } = require("path")
 const parsers = {
   "application/json": (req, chunk) => {
     try {
-      if (chunk.trim()) req.body = JSON.parse(chunk)
+      if (chunk.trim()) {
+        req.body = JSON.parse(chunk)
+      }
     } catch (error) {}
   },
 
