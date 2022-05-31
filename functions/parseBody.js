@@ -7,7 +7,9 @@ const { join } = require("path")
  */
 const parsers = {
   "application/json": (req, chunk) => {
-    req.body = JSON.parse(chunk)
+    try {
+      if (chunk.trim()) req.body = JSON.parse(chunk)
+    } catch (error) {}
   },
 
   "multipart/form-data": (req, chunk) => {
