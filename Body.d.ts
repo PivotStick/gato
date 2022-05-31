@@ -1,5 +1,7 @@
-class Body<T = {}> {
+export default class Body<T = {}> {
   $get<K extends keyof T>(key: K, defaultValue: T[K]): T[K]
+
+  $parseDataURL<K extends keyof T>(key: K): { buffer: Buffer; mimetype: string }
 
   /**
    * @param keys The keys of the properties to get. Defaults to `"dataURL"`
@@ -8,5 +10,3 @@ class Body<T = {}> {
    */
   $dataURLsToFiles<K extends keyof T>(...keys: K[]): Promise<string[]>
 }
-
-export default Body

@@ -72,8 +72,6 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
             request.body = {}
             request.files = {}
 
-            parseBody(request, data)
-
             for (const [regex, route] of controllers.entries()) {
               const match = regex.exec(url.pathname)
               if (!match) continue
@@ -83,6 +81,8 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
                 const user = await getUser(request)
 
                 hasRights(user.profiles, route.base, route.actionName)
+
+                await parseBody(request, data)
 
                 res = {
                   result: await route.controller({

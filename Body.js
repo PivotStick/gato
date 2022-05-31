@@ -18,21 +18,29 @@ module.exports = class Body {
     return value
   }
 
+  $parseDataURL(key) {
+    const dataUrl = this.$get(key)
+
+    const [meta, data] = dataUrl.split(",")
+    const [, mimeType, encoding] = /^data:(.+\/.+);(.*)$/.exec(meta) || []
+
+    if (!mimeType) {
+      throw new ApiError(`${key}.invalid_data-url`, 400, "Invalid dataUrl")
+    }
+
+    return {
+      buffer: Buffer.from(data, encoding),
+      mimeType,
+    }
+  }
+
   $dataURLsToFiles(...keys) {
     keys = keys.length ? keys : ["dataURL"]
 
     return Promise.all(
       keys.map(async (key) => {
-        const dataUrl = this.$get(key)
+        const { buffer, mimeType } = this.$parseDataURL(key)
 
-        const [meta, data] = dataUrl.split(",")
-        const [, mimeType, encoding] = /^data:(.+\/.+);(.*)$/.exec(meta) || []
-
-        if (!mimeType) {
-          throw new ApiError(`${key}.invalid_data-url`, 400, "Invalid dataUrl")
-        }
-
-        const buffer = Buffer.from(data, encoding)
         const fileName = `${ObjectId()}.${extension(mimeType)}`
         const path = join(uploadDir.value, fileName)
 

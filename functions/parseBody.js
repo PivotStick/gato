@@ -62,7 +62,7 @@ const noop = () => {}
  * @param {import("http").IncomingMessage} req
  * @param {any} chunk
  */
-exports.parseBody = (req, chunk) => {
+exports.parseBody = async (req, chunk) => {
   const contentType = (req.headers["content-type"] || "").split(";")[0]
   const parser = parsers[contentType] || noop
 
