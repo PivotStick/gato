@@ -23,7 +23,7 @@ module.exports = class Body {
   }
 
   $parseDataURL(key) {
-    const dataUrl = this.$get(key)
+    const dataUrl = this.$require(key)
 
     const [meta, data] = dataUrl.split(",")
     const [, mimeType, encoding] = /^data:(.+\/.+);(.*)$/.exec(meta) || []
