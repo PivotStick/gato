@@ -2,6 +2,9 @@ const crypto = require("crypto")
 
 const separator = ".:."
 const keylen = 64
+/**
+ * @type {BufferEncoding}
+ */
 const encoding = "hex"
 
 /**
@@ -27,6 +30,6 @@ exports.compare = (password, hash) =>
 
     crypto.scrypt(password, salt, keylen, (err, derivedKey) => {
       if (err) return reject(err)
-      resolve(key === derivedKey)
+      resolve(key === derivedKey.toString(encoding))
     })
   })
