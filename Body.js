@@ -8,11 +8,15 @@ const { ApiError } = require("./errors")
 module.exports = class Body {
   constructor() {}
 
-  $get(key, defaultValue) {
-    const value = this[key] || defaultValue
+  $require(key, defaultValue) {
+    const value = this[key] !== undefined ? this[key] : defaultValue
 
     if (value === undefined) {
-      throw new ApiError(`${key}.required`, 400, `"${key}" is required`)
+      throw new ApiError(
+        `${key}.undefined`,
+        400,
+        `"${key}" is undefined without default value`
+      )
     }
 
     return value

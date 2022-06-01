@@ -1,5 +1,5 @@
 export default class Body<T = {}> {
-  $get<K extends keyof T>(key: K, defaultValue: T[K]): T[K]
+  $require<K extends keyof T>(key: K, defaultValue: T[K]): T[K]
 
   $parseDataURL<K extends keyof T>(key: K): { buffer: Buffer; mimetype: string }
 
