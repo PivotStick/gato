@@ -16,7 +16,7 @@ const { parseBody } = require("./functions/parseBody")
 
 let clear = false
 
-const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
+const listen = (port = 8080, mongoUri) =>
   new Promise(async (resolve, reject) => {
     const server = http.createServer(async (request, response) => {
       response.setHeader("Access-Control-Allow-Origin", "*")
@@ -134,8 +134,11 @@ const listen = (port = 8080, mongoUri = "mongodb://localhost:27017/gatos") =>
     })
 
     if (clear) debug.clear()
-    await connect(mongoUri)
-    debug.log("\n\x1b[1m\x1b[32m\x1b[3m✓ Connected to MongoDB\x1b[0m")
+    if (mongoUri) {
+      await connect(mongoUri)
+      debug.log("\n\x1b[1m\x1b[32m\x1b[3m✓ Connected to MongoDB\x1b[0m")
+    }
+
     server.listen(port, () => {
       debug.log(`@ \x1b[4m\x1b[3mhttp://locahost:${port}\x1b[0m`)
       resolve()
