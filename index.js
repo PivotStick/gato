@@ -13,8 +13,10 @@ const { hasRights, roles, profiles } = require("./functions/hasRights")
 const { RouteNotFound, ApiError, UnknownError } = require("./errors")
 const { getCircularRemover } = require("./functions/getCircularRemover")
 const { parseBody } = require("./functions/parseBody")
+const { openDocServer } = require("./functions/openDocServer")
 
 let clear = false
+let doc = null
 
 const listen = (port = 8080, mongoUri) =>
   new Promise(async (resolve, reject) => {
@@ -41,7 +43,7 @@ const listen = (port = 8080, mongoUri) =>
       const match = /^\/(.*\.\w+)\/?$/.exec(url.pathname)
 
       /** @type {typeof routes["get"]} */
-      const controllers = routes[request.method.toLowerCase()] || new Map()
+      const controllers = routes[request.method.toLowerCase()] || []
       const headers = new Map(Object.entries(response.getHeaders()))
 
       headers.set("Content-Type", "application/json")
@@ -72,7 +74,7 @@ const listen = (port = 8080, mongoUri) =>
             request.body = {}
             request.files = {}
 
-            for (const [regex, route] of controllers.entries()) {
+            for (const [regex, route] of controllers) {
               const match = regex.exec(url.pathname)
               if (!match) continue
 
@@ -139,8 +141,15 @@ const listen = (port = 8080, mongoUri) =>
       debug.log("\n\x1b[1m\x1b[32m\x1b[3m✓ Connected to MongoDB\x1b[0m")
     }
 
-    server.listen(port, () => {
-      debug.log(`@ \x1b[4m\x1b[3mhttp://locahost:${port}\x1b[0m`)
+    server.listen(port, async () => {
+      debug.log(
+        `\x1b[3m@   \x1b[0m \x1b[4m\x1b[3mhttp://locahost:${port}\x1b[0m`
+      )
+
+      if (doc) {
+        await openDocServer(doc)
+      }
+
       resolve()
     })
   })
@@ -151,6 +160,21 @@ module.exports = {
    */
   set routes(path) {
     generateRoutes(join(require.main.path, path))
+  },
+
+  get routes() {
+    return require("./routes").routes
+  },
+
+  /**
+   * @param {{
+   *  port?: number;
+   *  title?: string;
+   *  description?: string;
+   * }} config
+   */
+  set documentation(config) {
+    doc = config
   },
 
   /**

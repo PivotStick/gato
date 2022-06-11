@@ -1,16 +1,17 @@
 ```js
-const { App } = require("gatos")
+const gatos = require("gatos")
 
-App.middlewares = "./middlewares"
-App.routes = "./routes"
-App.files = "../public/uploads"
+gatos.routes = "./routes"
+gatos.uploadDir = "../public/uploads"
 
-App.clear.listen()
+gatos.documentation = { title: "My auto generated doc" }
+
+gatos.clear.listen()
 ```
 
 ```js
 $$.get = {
-    "/ #hello-world": () => "Hello World",
+  "/ #hello-world": () => "Hello World",
 }
 ```
 
@@ -18,7 +19,7 @@ $$.get = {
 const { Model } = require("gatos/models")
 
 module.exports = class Book extends Model {
-    title = String.prototype
+  title = String.prototype
 }
 ```
 
@@ -49,7 +50,7 @@ $$.get = {
     }
 
     /**
-     * @type {import("gatos").Handler<{}, { _id: string }>}
+     * @type {import("gatos/@types").Controller<{}, { _id: string }>}
      */
     "/:_id #get-by-id": async ({ params }) => {
         /** ... */
@@ -68,14 +69,9 @@ $$.post = {
 
 $$.delete = {
     /**
-     * This one is using a middleware named "doSomeStuff",
-     * by using this syntax before the route path, it will
-     * automatically search for the "doSomeStuff.js" file in the
-     * declared middlewares path folder (read the quickstart to see how)
-     *
      * @description delete a book using the "params.id"
      */
-    "@doSomeStuff /:id #delete-by-id": async ({ params }) => {
+    "/:id #delete-by-id": async ({ params }) => {
         /** ... */
     }
 }
@@ -86,38 +82,36 @@ $$.delete = {
 `src/index.js`
 
 ```js
-const { App } = require("gatos")
+const gatos = require("gatos")
 
 // This generate absolute paths relative to this file
-App.routes = "./routes" // "/Users/username/project/src/routes"
-App.middlewares = "./middlewares" // "/Users/username/project/src/middlewares"
-App.files = "../public/uploads" // "/Users/username/project/public/uploads"
+gatos.routes = "./routes" // "/Users/username/project/src/routes"
+gatos.uploadDir = "../public/uploads" // "/Users/username/project/public/uploads"
 
-App.listen(3500)
+gatos.listen(3500)
 // Optional port argument
-// 7070 by default
+// 8080 by default
 ```
 
 # Roles
 
 By default you are an anonymous, the anonymous has no roles.
-But you can change it with the `$$roles` global object.
+But you can change it with the `gatos.roles` map object.
 
 ### Example
 
 `src/index.js`
 
 ```js
-const { App } = require("gatos")
+const gatos = require("gatos")
 
 // (Use this for admin)
-$$roles.anonymous = "*" // it now has ALL roles on ALL ACTIONS of ALL CONTROLLERS
+gatos.roles.set("anonymous", "*") // it now has ALL roles on ALL ACTIONS of ALL CONTROLLERS
 
-App.routes = "./routes"
-App.middlewares = "./routes"
+gatos.routes = "./routes"
 
 // Clears the console before listening
-App.clear.listen()
+gatos.clear.listen()
 ```
 
 see ? simple.
@@ -128,30 +122,31 @@ you can create new roles
 `src/security/roles.js`
 
 ```js
-$$roles.anonymous = {
-    auth: "*",
-}
+const { roles } = require("gatos")
+roles.set("anonymous", {
+  auth: "*",
+})
 
-$$roles.default = {
-    auth: {
-        "*": true,
-        "create-account": false,
-    },
-}
+roles.set("default", {
+  auth: {
+    "*": true,
+    "create-account": false,
+  },
+})
 
-$$roles.user = {
-    books: {
-        "get-all": true,
-        "get-by-id": true,
-        "create-one": false,
-    },
-}
+roles.set("user", {
+  books: {
+    "get-all": true,
+    "get-by-id": true,
+    "create-one": false,
+  },
+})
 
-$$roles.author = {
-    books: "*",
-}
+roles.set("author", {
+  books: "*",
+})
 
-$$roles.admin = "*"
+roles.set("admin", "*")
 ```
 
 to use the new roles, you need to declare profiles
@@ -159,23 +154,25 @@ to use the new roles, you need to declare profiles
 `src/security/profiles.js`
 
 ```js
-$$profiles.user = ["default", "user"]
-$$profiles.author = ["default", "author"]
+const { profiles } = require("gatos")
+
+profiles.set("user", ["default", "user"])
+profiles.set("author", ["default", "author"])
 ```
 
 profiles can have many specific roles!
 
 ```js
-const { App } = require("gatos")
+const gatos = require("gatos")
 
 // Load the configs!
 require("./security/roles")
 require("./security/profiles")
 
-App.routes = "./routes"
-App.middlewares = "./routes"
+gatos.routes = "./routes"
+gatos.models = "./models"
 
-App.clear.listen()
+gatos.clear.listen()
 ```
 
 # Models
@@ -199,26 +196,26 @@ const { Model } = require("gatos/models")
 // properties will be accepted, it will throw
 // an error if it's not a valid value for a property
 module.exports = class Book extends Model {
-    // We use the prototype property so we can have
-    // the types on instantiated documents
-    // (You will see that you can create your own types with their own validator & constructor)
-    name = String.prototype
-    pages = [String.prototype]
-    creationDate = Date.prototype
+  // We use the prototype property so we can have
+  // the types on instantiated documents
+  // (You will see that you can create your own types with their own validator & constructor)
+  name = String.prototype
+  pages = [String.prototype]
+  creationDate = Date.prototype
 
-    get pageCount() {
-        return this.pages.length
-    }
+  get pageCount() {
+    return this.pages.length
+  }
 
-    toString() {
-        return `[${this.name}] - ${this.pageCount} pages`
-    }
+  toString() {
+    return `[${this.name}] - ${this.pageCount} pages`
+  }
 
-    static getSpecialBooks() {
-        return this.find({
-            name: { $regex: /special/i },
-        })
-    }
+  static getSpecialBooks() {
+    return this.find({
+      name: { $regex: /special/i },
+    })
+  }
 }
 ```
 
@@ -248,13 +245,13 @@ $$.get = {
 $$.post = {
     /**
      * @description create a new book
-     * @type {import("gatos").Handler<{ name: string, pages: string[] }>}
+     * @type {import("gatos/@types").Controller<{ name: string, pages: string[] }>}
      */
     "/ #create": async ({ body }) => {
         // Will throw an error if not present in body
-        body.require("name")
+        body.$require("name")
         // Will use the default value if not present in body
-        body.require("pages", [])
+        body.$require("pages", [])
 
         return await Book.insertOne(body)
     }
@@ -264,7 +261,7 @@ $$.delete = {
     /**
      * @description delete a book using the "params.id"
      */
-    "@doSomeStuff /:_id #delete-by-id": async ({ params }) => {
+    "/:_id #delete-by-id": async ({ params }) => {
         const { _id } = params
         return await Book.deleteOne({ _id })
     }
@@ -281,20 +278,20 @@ Let's create a user
 const { Auth } = require("gatos/models")
 
 /**
- * The `$$User` part is important,
+ * The `Auth` class is important,
  * it will let know gatos to use
  * this class to find who you are
  * with the json web token
  */
-$$User = module.exports = class User extends Auth {
-    username = String.prototype
+module.exports = class User extends Auth {
+  username = String.prototype
 
-    firstName = String.prototype
-    lastName = String.prototype
+  firstName = String.prototype
+  lastName = String.prototype
 
-    get fullName() {
-        return `${this.firstName} ${this.lastName}`
-    }
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
 }
 ```
 
@@ -304,35 +301,35 @@ $$User = module.exports = class User extends Auth {
 const User = require("../models/User")
 
 $$.get = {
-    "/ #get-current-user": ({ user }) => user,
+  "/ #get-current-user": ({ user }) => user,
 }
 
 $$.post = {
-    /** @type {import("gatos").Handler<{ username: string, password: string }>} */
-    "/login #login": ({ body }) =>
-        User.login({
-            identifier: body.require("username"),
-            password: body.require("password"),
-        }),
+  /** @type {import("gatos/@types").Controller<{ username: string, password: string }>} */
+  "/login #login": ({ body }) =>
+    User.login({
+      username: body.$require("username"),
+      password: body.$require("password"),
+    }),
 
-    /**
-     * @type {import("gatos").Handler<{
-     *  username: string
-     *  lastName: string
-     *  firstName: string
-     *  password: string
-     * }>}
-     */
-    "/register #create-account": ({ body }) => {
-        body.requireAll(
-            "username"
-            "firstName",
-            "lastName",
-            "password"
-        )
+  /**
+   * @type {import("gatos").Handler<{
+   *  username: string
+   *  lastName: string
+   *  firstName: string
+   *  password: string
+   * }>}
+   */
+  "/register #create-account": ({ body }) => {
+    return User.register({
+      profiles: ["user"],
 
-        return User.register(body)
-    },
+      username: body.$require("username"),
+      firstName: body.$require("firstName"),
+      lastName: body.$require("lastName"),
+      password: body.$require("password"),
+    })
+  },
 }
 ```
 
@@ -345,22 +342,17 @@ _simple!_
 
 ```js
 const { Auth } = require("gatos/models")
+process.env.GATOS_USER_IDENTIFIER_KEY = "email"
 
-$$User = module.exports = class User extends Auth {
-    email = String.prototype
+module.exports = class User extends Auth {
+  email = String.prototype
 
-    firstName = String.prototype
-    lastName = String.prototype
+  firstName = String.prototype
+  lastName = String.prototype
 
-    // OOP is cool right?
-    // Just override the default getter, it was "username" by default :p
-    static get $$identifierKey() {
-        return "email"
-    }
-
-    get fullName() {
-        return `${this.firstName} ${this.lastName}`
-    }
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
 }
 ```
 
@@ -379,13 +371,13 @@ const { Type } = require("gatos/types")
  * and a getter called "raw" used to JSON response serialization
  */
 module.exports = class Email extends Type {
-    /**
-     * @param {string} email
-     * @param {string} message
-     */
-    sendTo(email, message) {
-        console.log(`Sending ${message} to ${email} from ${this.value}!`)
-    }
+  /**
+   * @param {string} email
+   * @param {string} message
+   */
+  sendTo(email, message) {
+    console.log(`Sending ${message} to ${email} from ${this.value}!`)
+  }
 }
 
 /**
@@ -400,25 +392,25 @@ Email.validator = (v) => /emailregex/.test(v)
 const { Auth } = require("gatos/models")
 const Email = require("../types/Email")
 
-$$User = module.exports = class User extends Auth {
-    /**
-     * as simple as that
-     * it will be instantiated when you get
-     * the document so you can use methods and all
-     * but serialized on server response (Email.raw getter)
-     */
-    email = Email.prototype
+module.exports = class User extends Auth {
+  /**
+   * as simple as that
+   * it will be instantiated when you get
+   * the document so you can use methods and all
+   * but serialized on server response (Email.raw getter)
+   */
+  email = Email.prototype
 
-    firstName = String.prototype
-    lastName = String.prototype
+  firstName = String.prototype
+  lastName = String.prototype
 
-    static get $$identifierKey() {
-        return "email"
-    }
+  static get $$identifierKey() {
+    return "email"
+  }
 
-    get fullName() {
-        return `${this.firstName} ${this.lastName}`
-    }
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`
+  }
 }
 ```
 
@@ -430,19 +422,19 @@ Let's see...
 const User = require("../models/User")
 
 $$.get = {
-    "/ #get-current-user": ({ user }) => user,
+  "/ #get-current-user": ({ user }) => user,
 }
 
 $$.post = {
-    /** @type {import("gatos").Handler<{ message: string }, "email">} */
-    "/emails/:email #send-email-to": ({ user, body, params }) => {
-        const message = body.require("message")
-        user.email.sendTo(params.email, message) // console.log(`${message} to ${email} from ${this.value}!`)
+  /** @type {import("gatos/@types").Controller<{ message: string }, "email">} */
+  "/emails/:email #send-email-to": ({ user, body, params }) => {
+    const message = body.$require("message")
+    user.email.sendTo(params.email, message) // console.log(`${message} to ${email} from ${this.value}!`)
 
-        return user // the "email" property will be the "email.raw" automatically
-    },
+    return user // the "email" property will be the "email.raw" automatically
+  },
 
-    /** ... */
+  /** ... */
 }
 ```
 

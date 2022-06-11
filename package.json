@@ -1,47 +1,47 @@
 {
-    "license": "ISC",
-    "version": "0.3.23",
-    "main": "index.js",
-    "name": "gatos",
-    "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
-    "repository": {
-        "url": "https://github.com/PivotStick/gatos"
+  "license": "ISC",
+  "version": "0.3.23",
+  "main": "index.js",
+  "name": "gatos",
+  "author": "Maxime Di Natale <maxime.di-natale@epitech.eu>",
+  "repository": {
+    "url": "https://github.com/PivotStick/gatos"
+  },
+  "description": "a very easy and fast way to declare a restful api with roles, auth and mongodb",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "classy-mongo": "^0.0.14",
+    "jsonwebtoken": "^8.5.1",
+    "mime-types": "^2.1.35",
+    "mongodb": "^4.0.1",
+    "socket.io": "^4.4.1"
+  },
+  "keywords": [
+    "mongodb",
+    "odm",
+    "rest",
+    "rest-api",
+    "api",
+    "jsonwebtoken",
+    "authentification",
+    "auth",
+    "fun",
+    "easy"
+  ],
+  "exports": {
+    ".": {
+      "require": "./index.js"
     },
-    "description": "a very easy and fast way to declare a restful api with roles, auth and mongodb",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+    "./errors": {
+      "require": "./errors/index.js"
     },
-    "dependencies": {
-        "classy-mongo": "^0.0.14",
-        "jsonwebtoken": "^8.5.1",
-        "mime-types": "^2.1.35",
-        "mongodb": "^4.0.1",
-        "socket.io": "^4.4.1"
+    "./models": {
+      "require": "./models/index.js"
     },
-    "keywords": [
-        "mongodb",
-        "odm",
-        "rest",
-        "rest-api",
-        "api",
-        "jsonwebtoken",
-        "authentification",
-        "auth",
-        "fun",
-        "easy"
-    ],
-    "exports": {
-        ".": {
-            "require": "./index.js"
-        },
-        "./errors": {
-            "require": "./errors/index.js"
-        },
-        "./models": {
-            "require": "./models/index.js"
-        },
-        "./types": {
-            "require": "./types/index.js"
-        }
+    "./types": {
+      "require": "./types/index.js"
     }
+  }
 }

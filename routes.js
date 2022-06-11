@@ -14,30 +14,38 @@ methods.forEach((method) => {
   Object.defineProperty(globalThis.$$, method, {
     set: (schema) => {
       /** @type {Map} */
-      const map = (exports.routes[method] = exports.routes[method] || new Map())
+      const map = (exports.routes[method] = exports.routes[method] || [])
 
       Object.keys(schema).forEach((key) => {
         const [path, name] = key.split(/\s+/g)
+        const raw = `/${currentBase}/${path}/`
+          .replace(/\/+/g, "/")
+          .replace(/\/$/, "")
+
         const endpoint = `^/${currentBase}/${path}/?$`
           .replace(/\/+/g, "\\/")
           .replace(/:([^\\/]+)/g, "(?<$1>[^/]+)")
 
-        map.set(new RegExp(endpoint, "i"), {
-          controller: schema[key],
-          actionName: name?.startsWith("#") ? name.slice(1) : undefined,
-          base: currentBase,
-        })
+        map.push([
+          new RegExp(endpoint, "i"),
+          {
+            raw,
+            controller: schema[key],
+            actionName: name?.startsWith("#") ? name.slice(1) : undefined,
+            base: currentBase,
+          },
+        ])
       })
     },
   })
 })
 
 /**
- * @type {Record<typeof methods[number], Map<RegExp, {
+ * @type {Record<typeof methods[number], [RegExp, {
  *    controller: import("./@types").Controller
  *    actionName: string;
  *    base: string
- * }>>}
+ * }][]>}
  */
 exports.routes = {}
 
