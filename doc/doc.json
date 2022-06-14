@@ -1,138 +1,16 @@
 {
 	"title": "Gatos DOC",
-	"description": "La doc de gatos est la meilleure, venez sur notre site web <a href=\"https://google.com\" target=\"_blank\">WOAW</a>",
+	"description": "Documentation for Gatos app",
+	"urls": ["http://localhost:4500/"],
 	"routes": [
 		{
 			"name": "users",
 			"endpoints": [
-				{
-					"method": "GET",
-					"name": "get-all",
-					"path": "/users"
-				},
-				{
-					"method": "GET",
-					"name": "get-one",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "POST",
-					"name": "create",
-					"path": "/users"
-				},
-				{
-					"method": "PATCH",
-					"name": "update-part",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "PUT",
-					"name": "update",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				},
-				{
-					"method": "DELETE",
-					"name": "delete",
-					"path": "/users/:_id"
-				}
+				{ "path": "/users", "name": "get-all", "method": "get" },
+				{ "path": "/users/:_id", "name": "get-one", "method": "get" },
+				{ "path": "/users", "name": "create", "method": "post" },
+				{ "path": "/users", "name": "clear-all", "method": "delete" }
 			]
-		},
-		{
-			"name": "books",
-			"endpoints": [
-				{
-					"method": "GET",
-					"name": "get-all",
-					"path": "/books"
-				},
-				{
-					"method": "GET",
-					"name": "get-one",
-					"path": "/books/:_id"
-				}
-			]
-		},
-		{
-			"name": "poutres",
-			"endpoints": []
-		},
-		{
-			"name": "moules",
-			"endpoints": []
-		},
-		{
-			"name": "non",
-			"endpoints": []
 		}
 	]
 }

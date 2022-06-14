@@ -147,6 +147,7 @@ const listen = (port = 8080, mongoUri) =>
       )
 
       if (doc) {
+        doc.urls = (doc.urls || []).concat(new URL(`http://localhost:${port}`))
         await openDocServer(doc)
       }
 
@@ -171,6 +172,7 @@ module.exports = {
    *  port?: number;
    *  title?: string;
    *  description?: string;
+   *  urls?: URL[]
    * }} config
    */
   set documentation(config) {

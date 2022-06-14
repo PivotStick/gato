@@ -22,6 +22,8 @@ exports.openDocServer = ({
   port = 4321,
   title = "Gatos DOC",
   description = "Documentation for Gatos app",
+
+  urls = /** @type {URL[]} */ ([]),
 } = {}) =>
   new Promise(async (resolve, reject) => {
     const mapped = Object.entries(routes).reduce((a, [method, endpoints]) => {
@@ -47,6 +49,7 @@ exports.openDocServer = ({
       JSON.stringify({
         title,
         description,
+        urls: urls.map((url) => url.href),
         routes: mapped,
       })
     )
