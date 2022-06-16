@@ -30,16 +30,10 @@ exports.openDocServer = ({
   new Promise(async (resolve, reject) => {
     const routesPath = require("../routes").routesPath
     const mapped = Object.entries(routes).reduce((a, [method, endpoints]) => {
-      let file = ""
-      /** @type {import("comment-parser").Block[]} */
-      let blocks = null
       endpoints.forEach(([path, details]) => {
         const fullPath = join(routesPath, details.base + ".js")
-        file = file || readFileSync(fullPath, "utf-8")
-
-        blocks = blocks || parse(file, { spacing: "preserve" })
-
-        const block = blocks.find((block) =>
+        const file = readFileSync(fullPath, "utf-8")
+        const block = parse(file, { spacing: "preserve" }).find((block) =>
           block.tags.find(
             (tag) => tag.tag === "for" && tag.name === details.actionName
           )

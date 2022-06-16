@@ -1,6 +1,279 @@
 {
-  "title": "Gatos API",
-  "description": "",
-  "urls": [],
-  "routes": []
+	"title": "Gatos API",
+	"description": "",
+	"urls": ["http://localhost:4600/"],
+	"routes": [
+		{
+			"name": "activities",
+			"endpoints": [
+				{
+					"path": "/activities",
+					"name": "get-all",
+					"method": "get",
+					"block": {
+						"description": "# Cette route mange de l'eau pute.\n\nOuais bon t'abuses\n",
+						"tags": [
+							{
+								"tag": "query",
+								"name": "name",
+								"type": "",
+								"optional": false,
+								"description": "Nom de l'activité\n",
+								"problems": [],
+								"source": [
+									{
+										"number": 6,
+										"source": "\t * @query name Nom de l'activité",
+										"tokens": {
+											"start": "\t ",
+											"delimiter": "*",
+											"postDelimiter": " ",
+											"tag": "@query",
+											"postTag": " ",
+											"name": "name",
+											"postName": " ",
+											"type": "",
+											"postType": "",
+											"description": "Nom de l'activité",
+											"end": "",
+											"lineEnd": ""
+										}
+									},
+									{
+										"number": 7,
+										"source": "\t *",
+										"tokens": {
+											"start": "\t ",
+											"delimiter": "*",
+											"postDelimiter": "",
+											"tag": "",
+											"postTag": "",
+											"name": "",
+											"postName": "",
+											"type": "",
+											"postType": "",
+											"description": "",
+											"end": "",
+											"lineEnd": ""
+										}
+									}
+								]
+							},
+							{
+								"tag": "for",
+								"name": "get-all",
+								"type": "",
+								"optional": false,
+								"description": "",
+								"problems": [],
+								"source": [
+									{
+										"number": 8,
+										"source": "\t * @for get-all",
+										"tokens": {
+											"start": "\t ",
+											"delimiter": "*",
+											"postDelimiter": " ",
+											"tag": "@for",
+											"postTag": " ",
+											"name": "get-all",
+											"postName": "",
+											"type": "",
+											"postType": "",
+											"description": "",
+											"end": "",
+											"lineEnd": ""
+										}
+									},
+									{
+										"number": 9,
+										"source": "\t */",
+										"tokens": {
+											"start": "\t ",
+											"delimiter": "",
+											"postDelimiter": "",
+											"tag": "",
+											"postTag": "",
+											"name": "",
+											"postName": "",
+											"type": "",
+											"postType": "",
+											"description": "",
+											"end": "*/",
+											"lineEnd": ""
+										}
+									}
+								]
+							}
+						],
+						"source": [
+							{
+								"number": 1,
+								"source": "\t/**",
+								"tokens": {
+									"start": "\t",
+									"delimiter": "/**",
+									"postDelimiter": "",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 2,
+								"source": "\t * # Cette route mange de l'eau pute.",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": " ",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "# Cette route mange de l'eau pute.",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 3,
+								"source": "\t *",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": "",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 4,
+								"source": "\t * Ouais bon t'abuses",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": " ",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "Ouais bon t'abuses",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 5,
+								"source": "\t *",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": "",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 6,
+								"source": "\t * @query name Nom de l'activité",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": " ",
+									"tag": "@query",
+									"postTag": " ",
+									"name": "name",
+									"postName": " ",
+									"type": "",
+									"postType": "",
+									"description": "Nom de l'activité",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 7,
+								"source": "\t *",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": "",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 8,
+								"source": "\t * @for get-all",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "*",
+									"postDelimiter": " ",
+									"tag": "@for",
+									"postTag": " ",
+									"name": "get-all",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "",
+									"lineEnd": ""
+								}
+							},
+							{
+								"number": 9,
+								"source": "\t */",
+								"tokens": {
+									"start": "\t ",
+									"delimiter": "",
+									"postDelimiter": "",
+									"tag": "",
+									"postTag": "",
+									"name": "",
+									"postName": "",
+									"type": "",
+									"postType": "",
+									"description": "",
+									"end": "*/",
+									"lineEnd": ""
+								}
+							}
+						],
+						"problems": []
+					}
+				}
+			]
+		}
+	]
 }
