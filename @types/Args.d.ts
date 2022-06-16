@@ -1,4 +1,4 @@
-export interface Args<Body = {}> {
+export interface Args<Body = {}, Params = string> {
   $: {
     status: number
     headers: Map<string, string>
@@ -15,7 +15,7 @@ export interface Args<Body = {}> {
     }
   >
 
-  params: Record<string, string>
+  params: Record<Params, string>
   query: URLSearchParams
 
   user: Gatos.Args["user"]

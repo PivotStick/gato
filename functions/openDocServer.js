@@ -4,6 +4,8 @@ const { readFile, writeFile } = require("fs").promises
 const { routes } = require("../routes")
 const { join } = require("path")
 const debug = require("../debug")
+const { readFileSync } = require("fs")
+const { parse } = require("comment-parser")
 
 const server = createServer(async (req, res) => {
   const path = join(__dirname, "../doc", req.url.replace(/\/$/, "/index.html"))
@@ -23,16 +25,33 @@ exports.openDocServer = ({
   title = "Gatos DOC",
   description = "Documentation for Gatos app",
 
-  urls = /** @type {URL[]} */ ([]),
+  urls = [],
 } = {}) =>
   new Promise(async (resolve, reject) => {
+    const routesPath = require("../routes").routesPath
     const mapped = Object.entries(routes).reduce((a, [method, endpoints]) => {
+      let file = ""
+      /** @type {import("comment-parser").Block[]} */
+      let blocks = null
       endpoints.forEach(([path, details]) => {
+        const fullPath = join(routesPath, details.base + ".js")
+        file = file || readFileSync(fullPath, "utf-8")
+
+        blocks = blocks || parse(file, { spacing: "preserve" })
+
+        const block = blocks.find((block) =>
+          block.tags.find(
+            (tag) => tag.tag === "for" && tag.name === details.actionName
+          )
+        )
+
         const endpoint = {
           path: details.raw,
           name: details.actionName,
           method,
+          block,
         }
+
         const item =
           a.find((_) => _.name === details.base) ||
           a.push({

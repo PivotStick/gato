@@ -1,5 +1,6 @@
-const { readdirSync } = require("fs")
+const { readdirSync, readFileSync } = require("fs")
 const { join } = require("path")
+const { parse } = require("comment-parser")
 
 const methods = /** @type {const} */ (["get", "post", "put", "patch", "delete"])
 
@@ -49,12 +50,16 @@ methods.forEach((method) => {
  */
 exports.routes = {}
 
+exports.routesPath = null
+
 exports.generateRoutes = function (path) {
+  exports.routesPath = path
   const routes = readdirSync(path)
   for (const route of routes) {
     if (!route.endsWith(".js")) continue
     currentBase = route.replace(/\.\w+$/, "")
-    require(join(path, route))
+    const fullPath = join(path, route)
+    require(fullPath)
   }
 
   currentBase = ""

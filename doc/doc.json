@@ -1,16 +1,6 @@
 {
-	"title": "Gatos DOC",
-	"description": "Documentation for Gatos app",
-	"urls": ["http://localhost:4500/"],
-	"routes": [
-		{
-			"name": "users",
-			"endpoints": [
-				{ "path": "/users", "name": "get-all", "method": "get" },
-				{ "path": "/users/:_id", "name": "get-one", "method": "get" },
-				{ "path": "/users", "name": "create", "method": "post" },
-				{ "path": "/users", "name": "clear-all", "method": "delete" }
-			]
-		}
-	]
+  "title": "Gatos API",
+  "description": "",
+  "urls": [],
+  "routes": []
 }
